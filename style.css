@@ -1,3 +1,9 @@
+/* 追加: 主催者名を小さめに表示するクラス */
+.host-label {
+    font-size: 14px;     /* お好みで調整（14px は例） */
+    margin-left: 10px;   /* 左側に余白を作り、文字を離す */
+  }
+
 /* 全体の地の文は DotGothic16 に */
 body {
     font-family: 'DotGothic16', sans-serif;
@@ -67,7 +73,7 @@ body {
   
   /* 駒のスタイル：ここだけ Shippori Mincho */
   .piece {
-    background-color: lightgoldenrodyellow;
+    background-color: #CD853F;
     border: 1px solid rgba(0, 0, 0, 0.1); /* 薄い枠線 */
     
     /* 一回り小さくする：幅40×高さ45 */
