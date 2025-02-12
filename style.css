@@ -1,12 +1,52 @@
-/* 将棋盤全体のスタイル */
-#shogi-board {
+/* 全体の地の文は DotGothic16 に */
+body {
+    font-family: 'DotGothic16', sans-serif;
+    text-align: center;
+    margin: 20px;
+  }
+  
+  /* タイトル（将棋）のフォントサイズを少し大きめに */
+  h1 {
+    font-size: 32px;
+  }
+  
+  /* ゲーム全体のレイアウト */
+  #game-container {
+    display: flex;
+    justify-content: center; /* 全体を中央寄せ */
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* 左側：後手の持ち駒エリア */
+  #left-hand-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 盤＋先手の持ち駒を横並びに */
+  #board-and-bottom-hand {
+    display: flex;
+    align-items: flex-end; /* 下端をそろえる */
+  }
+  
+  /* 将棋盤のスタイル */
+  #shogi-board {
     display: grid;
     grid-template-columns: repeat(9, 50px);
     grid-template-rows: repeat(9, 50px);
     border: 2px solid black;
     width: 450px;
     height: 450px;
-    margin: 20px auto; /* 画面中央寄せ */
+  }
+  
+  /* 先手の持ち駒＆ラベルをまとめるコンテナ */
+  #bottom-hand-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10px;
   }
   
   /* 各マスのスタイル */
@@ -20,30 +60,67 @@
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
+  
+    /* 盤面を薄いクリーム色に */
+    background-color: #FFCC66;
   }
   
-  /* 駒のスタイル */
+  /* 駒のスタイル：ここだけ Shippori Mincho */
   .piece {
     background-color: lightgoldenrodyellow;
-    border-radius: 5px;
-    padding: 5px;
-    user-select: none; /* テキスト選択を防止 */
-  }
-
+    border: 1px solid rgba(0, 0, 0, 0.1); /* 薄い枠線 */
+    
+    /* 一回り小さくする：幅40×高さ45 */
+    width: 40px;
+    height: 45px;
+  
+    /*
+      五角形 (先端を一角) の clip-path
+      - 数値を少し内側にして、はみ出し防止
+    */
+    clip-path: polygon(
+      50% 0%,   /* 先端をやや下げて上端から5%の位置 */
+      85% 15%,  /* 右上斜め */
+      96% 98%,  /* 右下 */
+      4% 98%,  /* 左下 */
+      15% 15%   /* 左上斜め */
+    );
+  
+    /* テキストを中央に配置 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    user-select: none;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 16px; /* 小さくして文字がはみ出ないように */
+  }  
+  
+  /* 逆さま表示用 */
   .rotated {
     transform: rotate(180deg);
   }
-
-  /* 持ち駒エリアのスタイル */
-#hands-container {
-    margin-left: 20px; /* 将棋盤との間に余白をあける */
-  }
   
+  /* 持ち駒エリアのスタイル */
   .hand-area {
     border: 1px solid black;
-    min-height: 100px;  /* とりあえずの高さ */
-    width: 100px;       /* とりあえずの幅 */
-    margin-bottom: 20px;
+    min-height: 100px;
+    width: 100px;
+    margin-top: 10px;
     padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  /* ラベルのスタイル（地の文なので DotGothic16） */
+  .hand-label {
+    font-size: 24px;
+    margin-top: 10px;
+  }
+  
+  /* 「後手」ラベルを逆さまに */
+  .rotated-label {
+    transform: rotate(180deg);
   }
   

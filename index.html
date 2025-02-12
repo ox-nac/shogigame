@@ -2,22 +2,36 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>将棋</title>
+  <title>将棋道場</title>
+  <!-- Google Fonts: Shippori Mincho と DotGothic16 -->
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&family=DotGothic16&display=swap" rel="stylesheet">
   <!-- CSSファイルの読み込み -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1 style="text-align:center;">将棋</h1>
-  <!-- 将棋盤を描画するための要素 -->
-  <div id="shogi-board"></div>
+  <h1>将棋道場</h1>
+  
+  <div id="game-container">
+    <!-- 後手（上側）の持ち駒エリア：左側に配置 -->
+    <div id="left-hand-container">
+      <!-- 後手の持ち駒 -->
+      <div id="top-hand" class="hand-area"></div>
+      <!-- 逆さまに表示する「後手」ラベル -->
+      <div class="hand-label rotated-label">後手</div>
+    </div>
 
-  <!-- 持ち駒を表示するエリア -->
-  <div id="hands-container">
-    <h2>上側の持ち駒</h2>
-    <div id="top-hand" class="hand-area"></div>
-
-    <h2>下側の持ち駒</h2>
-    <div id="bottom-hand" class="hand-area"></div>
+    <!-- 盤と先手の持ち駒を横並びに配置 -->
+    <div id="board-and-bottom-hand">
+      <!-- 将棋盤 -->
+      <div id="shogi-board"></div>
+      <!-- 先手の持ち駒とラベルをまとめるコンテナ -->
+      <div id="bottom-hand-container">
+        <!-- 先手ラベル（普通の向き） -->
+        <div class="hand-label">先手</div>
+        <!-- 先手の持ち駒 -->
+        <div id="bottom-hand" class="hand-area"></div>
+      </div>
+    </div>
   </div>
 
   <!-- JavaScriptファイルの読み込み -->
