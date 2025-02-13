@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>将棋道場</title>
   <!-- Google Fonts: Shippori Mincho と DotGothic16 -->
-  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&family=DotGothic16&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap" rel="stylesheet">
   <!-- CSSファイルの読み込み -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -13,9 +13,14 @@
     将棋道場
     <!-- 右隣に小さく表示する -->
     <span class="host-label">主催者：涼一</span>
-    <!-- host-label の右隣に画像を配置 -->
-    <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
-    <span class="host-twitter">@ox_nac</span>
+    <span class="host-container">
+      <a href="https://x.com/ox_nac" target="_blank" style="display: inline-flex; align-items: center; gap: 2px;">
+        <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
+        <span class="host-twitter">@ox_nac</span>
+      </a>
+    </span>
+    
+
   </h1>
 
   <div id="game-container">
