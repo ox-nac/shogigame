@@ -4,6 +4,21 @@
     margin-left: 10px;   /* 左側に余白を作り、文字を離す */
   }
 
+/* 主催者画像のスタイル */
+.host-icon {
+    height: 20px;       /* ホストラベルと同じくらいのサイズに調整 */
+    width: auto;
+    margin-left: 1px;   /* 文字との間に少し余白 */
+    vertical-align: middle; /* ラベルと縦位置を合わせる */
+  }
+
+/* 主催者 Twitter ID のスタイル */
+.host-twitter {
+    font-size: 14px;    /* 小さめの文字サイズ */
+    margin-left: 1px;   /* 画像との間に余白 */
+    vertical-align: middle;
+  }
+
 /* 全体の地の文は DotGothic16 に */
 body {
     font-family: 'DotGothic16', sans-serif;
