@@ -174,4 +174,3 @@ const board = [
   // 初期描画
   renderBoard();
   renderHands();
-  
