@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>将棋道場</title>
-  <!-- Google Fonts: Shippori Mincho と DotGothic16 -->
+  <!-- Google Fonts: Shippori Mincho -->
   <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho&display=swap" rel="stylesheet">
   <!-- CSSファイルの読み込み -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>
-    将棋道場
-    <!-- 右隣に小さく表示する -->
-    <span class="host-label">主催者：涼一</span>
-    <span class="host-container">
-      <a href="https://x.com/ox_nac" target="_blank" style="display: inline-flex; align-items: center; gap: 2px;">
-        <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
-        <span class="host-twitter">@ox_nac</span>
-      </a>
-    </span>
-    
-
-  </h1>
-
-  <div id="game-container">
-    <!-- 後手（上側）の持ち駒エリア：左側に配置 -->
-    <div id="left-hand-container">
-      <!-- 後手の持ち駒 -->
-      <div id="top-hand" class="hand-area"></div>
-      <!-- 逆さまに表示する「後手」ラベル -->
-      <div class="hand-label rotated-label">後手</div>
-    </div>
-
-    <!-- 盤と先手の持ち駒を横並びに配置 -->
-    <div id="board-and-bottom-hand">
-      <!-- 将棋盤 -->
-      <div id="shogi-board"></div>
-      <!-- 先手の持ち駒とラベルをまとめるコンテナ -->
-      <div id="bottom-hand-container">
-        <!-- 先手ラベル（普通の向き） -->
-        <div class="hand-label">先手</div>
-        <!-- 先手の持ち駒 -->
-        <div id="bottom-hand" class="hand-area"></div>
+  <!-- Header: 盤面上部左側に表示（スマホ・PCとも） -->
+  <div id="header">
+    <div id="title-container">
+      <!-- タイトル -->
+      <h1>将棋道場</h1>
+      <!-- スポンサー情報 -->
+      <div id="sponsor-info">
+        <span class="sponsor-text">主催者：涼一</span>
+        <span class="host-container">
+          <a href="https://x.com/ox_nac" target="_blank" class="host-link">
+            <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
+            <span class="host-twitter">@ox_nac</span>
+          </a>
+        </span>
       </div>
+    </div>
+  </div>
+
+  <!-- Board Container -->
+  <div id="board-container">
+    <!-- 将棋盤 -->
+    <div id="shogi-board">
+      <!-- 盤面セルは JS で生成 -->
+    </div>
+  </div>
+
+  <!-- Captured Pieces Area for Sente (先手) -->
+  <div id="bottom-hand-container">
+    <div id="bottom-hand">
+      <!-- 先手持ち駒が横一列に表示 -->
+    </div>
+  </div>
+
+  <!-- Captured Pieces Area for Gote (後手) -->
+  <div id="top-hand-container">
+    <div id="top-hand">
+      <!-- 後手持ち駒（必要に応じて） -->
     </div>
   </div>
 

@@ -1,176 +1,205 @@
 /**
  * 将棋盤の初期配置
- *  - text    : 駒の文字
- *  - rotated : trueなら上側（後手）、falseなら下側（先手）
- *  - 盤上に駒がない場合は null
+ * - text: 駒の文字
+ * - rotated: trueなら上側（後手）、falseなら下側（先手）
+ * 盤上に駒がない場合は null を設定
  */
 const board = [
-    [
-      { text: "香", rotated: true }, { text: "桂", rotated: true }, { text: "銀", rotated: true },
-      { text: "金", rotated: true }, { text: "王", rotated: true }, { text: "金", rotated: true },
-      { text: "銀", rotated: true }, { text: "桂", rotated: true }, { text: "香", rotated: true }
-    ],
-    [
-      null, { text: "飛", rotated: true }, null, null, null, null, null, { text: "角", rotated: true }, null
-    ],
-    [
-      { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true },
-      { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true },
-      { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true }
-    ],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [null, null, null, null, null, null, null, null, null],
-    [
-      { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false },
-      { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false },
-      { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false }
-    ],
-    [
-      null, { text: "角", rotated: false }, null, null, null, null, null, { text: "飛", rotated: false }, null
-    ],
-    [
-      { text: "香", rotated: false }, { text: "桂", rotated: false }, { text: "銀", rotated: false },
-      { text: "金", rotated: false }, { text: "玉", rotated: false }, { text: "金", rotated: false },
-      { text: "銀", rotated: false }, { text: "桂", rotated: false }, { text: "香", rotated: false }
-    ]
-  ];
-  
-  // 選択中の駒オブジェクトと座標
-  let selectedPiece = null;
-  let selectedPosition = null;
-  // 初手は先手（下側）から
-  let currentTurn = "bottom";
-  
-  // 持ち駒リスト
-  let topHand = [];       // 後手（上側）の持ち駒
-  let bottomHand = [];    // 先手（下側）の持ち駒
-  
-  const boardElement = document.getElementById("shogi-board");
-  
-  // 将棋盤を描画
-  function renderBoard() {
-    boardElement.innerHTML = "";
-  
-    for (let y = 0; y < 9; y++) {
-      for (let x = 0; x < 9; x++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-  
-        // セル全体にクリックイベント
-        cell.onclick = () => {
-          if (selectedPiece) {
-            movePiece(x, y);
-          } else if (board[y][x]) {
-            selectPiece(x, y);
-          }
-        };
-  
-        const pieceObj = board[y][x];
-        if (pieceObj) {
-          const piece = document.createElement("div");
-          piece.classList.add("piece");
-          piece.innerText = pieceObj.text;
-          if (pieceObj.rotated) {
-            piece.classList.add("rotated");
-          }
-          cell.appendChild(piece);
+  [
+    { text: "香", rotated: true }, { text: "桂", rotated: true }, { text: "銀", rotated: true },
+    { text: "金", rotated: true }, { text: "王", rotated: true }, { text: "金", rotated: true },
+    { text: "銀", rotated: true }, { text: "桂", rotated: true }, { text: "香", rotated: true }
+  ],
+  [
+    null, { text: "飛", rotated: true }, null, null, null, null, null, { text: "角", rotated: true }, null
+  ],
+  [
+    { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true },
+    { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true },
+    { text: "歩", rotated: true }, { text: "歩", rotated: true }, { text: "歩", rotated: true }
+  ],
+  [null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, null],
+  [
+    { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false },
+    { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false },
+    { text: "歩", rotated: false }, { text: "歩", rotated: false }, { text: "歩", rotated: false }
+  ],
+  [
+    null, { text: "角", rotated: false }, null, null, null, null, null, { text: "飛", rotated: false }, null
+  ],
+  [
+    { text: "香", rotated: false }, { text: "桂", rotated: false }, { text: "銀", rotated: false },
+    { text: "金", rotated: false }, { text: "玉", rotated: false }, { text: "金", rotated: false },
+    { text: "銀", rotated: false }, { text: "桂", rotated: false }, { text: "香", rotated: false }
+  ]
+];
+
+// 選択中の駒とその座標を保持する変数
+let selectedPiece = null;
+let selectedPosition = null;
+// 現在の手番。初手は先手（下側）なので "bottom"
+let currentTurn = "bottom";
+
+// 持ち駒リスト
+// topHand: 後手が取った駒（#top-hand に表示）
+// bottomHand: 先手が取った駒（#bottom-hand に表示）
+let topHand = [];
+let bottomHand = [];
+
+// 将棋盤の HTML 要素を取得
+const boardElement = document.getElementById("shogi-board");
+
+/**
+ * renderBoard()
+ * 盤面を生成して描画します。
+ */
+function renderBoard() {
+  boardElement.innerHTML = "";
+  for (let y = 0; y < 9; y++) {
+    for (let x = 0; x < 9; x++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.onclick = () => {
+        if (selectedPiece) {
+          movePiece(x, y);
+        } else if (board[y][x]) {
+          selectPiece(x, y);
         }
-  
-        boardElement.appendChild(cell);
+      };
+      const pieceObj = board[y][x];
+      if (pieceObj) {
+        const piece = document.createElement("div");
+        piece.classList.add("piece");
+        piece.innerText = pieceObj.text;
+        if (pieceObj.rotated) {
+          piece.classList.add("rotated");
+        }
+        cell.appendChild(piece);
       }
+      boardElement.appendChild(cell);
     }
   }
-  
-  // 持ち駒を描画
-  function renderHands() {
-    // 後手の持ち駒（左側）
-    const topHandDiv = document.getElementById("top-hand");
-    topHandDiv.innerHTML = "";
-    topHand.forEach(pieceObj => {
-      const piece = document.createElement("div");
-      piece.classList.add("piece");
-      piece.innerText = pieceObj.text;
-      if (pieceObj.rotated) {
-        piece.classList.add("rotated");
-      }
-      topHandDiv.appendChild(piece);
-    });
-  
-    // 先手の持ち駒（盤の右側）
-    const bottomHandDiv = document.getElementById("bottom-hand");
-    bottomHandDiv.innerHTML = "";
-    bottomHand.forEach(pieceObj => {
-      const piece = document.createElement("div");
-      piece.classList.add("piece");
-      piece.innerText = pieceObj.text;
-      if (pieceObj.rotated) {
-        piece.classList.add("rotated");
-      }
-      bottomHandDiv.appendChild(piece);
-    });
-  }
-  
-  // 駒を選択する
-  function selectPiece(x, y) {
-    const pieceObj = board[y][x];
-    if (!pieceObj) return;
-  
-    // 手番判定
-    const isTopTurn = (currentTurn === "top");
-    const isPieceTopSide = pieceObj.rotated; // true=後手, false=先手
-  
-    // 手番と駒の向きが一致する駒のみ選択
-    if (isTopTurn === isPieceTopSide) {
-      selectedPiece = pieceObj;
-      selectedPosition = { x, y };
+}
+
+/**
+ * renderHands()
+ * 持ち駒をグループ化して描画します。
+ * 同じ駒が複数ある場合は、1つの駒アイコンに「×n」と表示します。
+ */
+function renderHands() {
+  // 後手持ち駒エリア (#top-hand)
+  const topHandDiv = document.getElementById("top-hand");
+  topHandDiv.innerHTML = "";
+  let groupTop = {};
+  topHand.forEach(pieceObj => {
+    let key = pieceObj.text + "_" + pieceObj.rotated;
+    if (groupTop[key]) {
+      groupTop[key].count += 1;
     } else {
-      selectedPiece = null;
-      selectedPosition = null;
+      groupTop[key] = { piece: pieceObj, count: 1 };
     }
+  });
+  for (let key in groupTop) {
+    let group = groupTop[key];
+    let pieceElem = document.createElement("div");
+    pieceElem.classList.add("piece");
+    pieceElem.innerText = group.piece.text;
+    if (group.piece.rotated) {
+      pieceElem.classList.add("rotated");
+    }
+    if (group.count > 1) {
+      let countSpan = document.createElement("span");
+      countSpan.classList.add("piece-count");
+      countSpan.innerText = "×" + group.count;
+      pieceElem.appendChild(countSpan);
+    }
+    topHandDiv.appendChild(pieceElem);
   }
-  
-  // 駒を移動する
-  function movePiece(x, y) {
-    if (!selectedPiece) return;
-  
-    const destPiece = board[y][x];
-    const isTopTurn = (currentTurn === "top");
-  
-    // 自分の駒があるマスには移動不可
-    if (destPiece && destPiece.rotated === isTopTurn) {
-      selectedPiece = null;
-      selectedPosition = null;
-      return;
+
+  // 先手持ち駒エリア (#bottom-hand)
+  const bottomHandDiv = document.getElementById("bottom-hand");
+  bottomHandDiv.innerHTML = "";
+  let groupBottom = {};
+  bottomHand.forEach(pieceObj => {
+    let key = pieceObj.text + "_" + pieceObj.rotated;
+    if (groupBottom[key]) {
+      groupBottom[key].count += 1;
+    } else {
+      groupBottom[key] = { piece: pieceObj, count: 1 };
     }
-  
-    // 敵駒をキャプチャ
-    if (destPiece && destPiece.rotated !== isTopTurn) {
-      const capturedPiece = destPiece;
-      // 取った側に合わせて回転フラグを更新
-      capturedPiece.rotated = isTopTurn;
-      if (isTopTurn) {
-        topHand.push(capturedPiece);
-      } else {
-        bottomHand.push(capturedPiece);
-      }
+  });
+  for (let key in groupBottom) {
+    let group = groupBottom[key];
+    let pieceElem = document.createElement("div");
+    pieceElem.classList.add("piece");
+    pieceElem.innerText = group.piece.text;
+    if (group.piece.rotated) {
+      pieceElem.classList.add("rotated");
     }
-  
-    // 移動
-    board[selectedPosition.y][selectedPosition.x] = null;
-    board[y][x] = selectedPiece;
-  
-    // 選択解除
+    if (group.count > 1) {
+      let countSpan = document.createElement("span");
+      countSpan.classList.add("piece-count");
+      countSpan.innerText = "×" + group.count;
+      pieceElem.appendChild(countSpan);
+    }
+    bottomHandDiv.appendChild(pieceElem);
+  }
+}
+
+/**
+ * selectPiece(x, y)
+ * 指定セルの駒を選択します。手番と駒の向きが一致する場合のみ選択可能です。
+ */
+function selectPiece(x, y) {
+  const pieceObj = board[y][x];
+  if (!pieceObj) return;
+  const isTopTurn = (currentTurn === "top");
+  const isPieceTopSide = pieceObj.rotated;
+  if (isTopTurn === isPieceTopSide) {
+    selectedPiece = pieceObj;
+    selectedPosition = { x, y };
+  } else {
     selectedPiece = null;
     selectedPosition = null;
-  
-    // 手番交代
-    currentTurn = isTopTurn ? "bottom" : "top";
-  
-    renderBoard();
-    renderHands();
   }
-  
-  // 初期描画
+}
+
+/**
+ * movePiece(x, y)
+ * 選択中の駒を指定セルに移動します。
+ * ・移動先に自分の駒がある場合は無効。
+ * ・移動先に敵の駒がある場合、捕獲して持ち駒リストに追加。
+ * ・移動後、手番を交代し盤面と持ち駒エリアを再描画します。
+ */
+function movePiece(x, y) {
+  if (!selectedPiece) return;
+  const destPiece = board[y][x];
+  const isTopTurn = (currentTurn === "top");
+  if (destPiece && destPiece.rotated === isTopTurn) {
+    selectedPiece = null;
+    selectedPosition = null;
+    return;
+  }
+  if (destPiece && destPiece.rotated !== isTopTurn) {
+    const capturedPiece = destPiece;
+    capturedPiece.rotated = isTopTurn;
+    if (isTopTurn) {
+      topHand.push(capturedPiece);
+    } else {
+      bottomHand.push(capturedPiece);
+    }
+  }
+  board[selectedPosition.y][selectedPosition.x] = null;
+  board[y][x] = selectedPiece;
+  selectedPiece = null;
+  selectedPosition = null;
+  currentTurn = isTopTurn ? "bottom" : "top";
   renderBoard();
   renderHands();
+}
+
+// 初期描画
+renderBoard();
+renderHands();
