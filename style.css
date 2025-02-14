@@ -6,12 +6,12 @@
   --host-twitter-font-size: 15px; /* @ox_nac のフォントサイズ */
   --title-font-size: 32px;        /* タイトル「将棋道場」の文字サイズ */
   --title-line-height: 1.2;       /* タイトルの行高さ倍率 */
-  --board-width: 451px;           /* PC版の将棋盤の幅 */
-  --board-height: 451px;          /* PC版の将棋盤の高さ */
+  --board-width: 451px;           /* 将棋盤の幅（PC版） */
+  --board-height: 451px;          /* 将棋盤の高さ（PC版） */
   --cell-size: 50px;              /* 各セルのサイズ */
   --piece-width: 40px;            /* 駒の幅 */
   --piece-height: 45px;           /* 駒の高さ */
-  --captured-area-height: 50px;   /* 持ち駒台の高さ（駒の高さより少し大きい） */
+  --captured-area-height: 50px;   /* 持ち駒台の高さ */
   --header-bottom-margin: 10px;    /* ヘッダーと盤面の間隔 */
 }
 
@@ -67,7 +67,20 @@
   font-size: var(--host-twitter-font-size);
   margin: 0;
   vertical-align: middle;
+  color: blue;
 }
+
+.host-link {
+  position: relative;  /* 追加：これにより z-index が有効になる */
+  pointer-events: auto;
+  z-index: 100;
+  color: blue;
+  display: inline-flex; /* 念のため再指定 */
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+}
+
 
 /* ============================= */
 /* Board and Captured Pieces Layout (PC版) */
@@ -75,7 +88,7 @@
 #board-container {
   width: var(--board-width);
   margin: 0 auto;
-  position: relative; /* 絶対配置の基準 */
+  position: relative; /* 後手持ち駒エリアの基準 */
 }
 
 #shogi-board {
@@ -87,20 +100,20 @@
   height: var(--board-height);
 }
 
-/* 後手の持ち駒エリア：盤面内に絶対配置し、盤面右上端からさらに上にずらす */
+/* 後手の持ち駒エリア */
+/* 盤面の右上に、盤面上端から60px上（例）に配置（香車の上あたりの空白） */
 #top-hand-container {
   position: absolute;
-  top: -60px; /* 盤面上端から60px上に配置（必要に応じて調整） */
+  top: -60px; /* 盤面上端から60px上に配置。必要に応じて調整してください。 */
   right: 0;
   width: var(--board-width);
   height: var(--captured-area-height);
-  z-index: 10; /* 前面に表示 */
+  z-index: 10;
 }
 
-/* 後手持ち駒エリア内部：右から左に並べる */
 #top-hand {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row-reverse; /* 右→左に並ぶ */
   align-items: center;
   justify-content: flex-start;
   width: 100%;
@@ -109,7 +122,7 @@
   overflow-x: auto;
 }
 
-/* 先手の持ち駒エリア：盤面の下延長線上に横長に配置 */
+/* 先手の持ち駒エリア */
 #bottom-hand-container {
   width: var(--board-width);
   margin: 5px auto 0 auto;
@@ -149,11 +162,11 @@
   height: var(--piece-height);
   position: relative;
   clip-path: polygon(
-    50% 0%, 
-    85% 15%, 
-    96% 98%, 
-    4% 98%, 
-    15% 15%
+    50% 0%,      
+    85% 15%,     
+    96% 98%,     
+    4% 98%,      
+    15% 15%      
   );
   display: flex;
   align-items: center;
@@ -200,7 +213,7 @@
     border: 2px solid black;
   }
   #top-hand-container {
-    top: -60px;
+    top: -60px; /* 調整可能 */
     right: 0;
     width: 100vw;
     height: var(--captured-area-height);
