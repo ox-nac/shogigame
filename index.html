@@ -9,20 +9,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header: 盤面上部左側に表示（スマホ・PCとも） -->
+  <!-- Header: 盤面の外、上部（左上）に配置 -->
   <div id="header">
     <div id="title-container">
-      <!-- タイトル -->
       <h1>将棋道場</h1>
-      <!-- スポンサー情報 -->
       <div id="sponsor-info">
-        <span class="sponsor-text">主催者：涼一</span>
-        <span class="host-container">
+        <div class="sponsor-text">主催者：涼一</div>
+        <!-- X Icon と @ox_nac を縦に配置 -->
+        <div class="host-container">
           <a href="https://x.com/ox_nac" target="_blank" class="host-link">
             <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
             <span class="host-twitter">@ox_nac</span>
           </a>
-        </span>
+        </div>
       </div>
     </div>
   </div>
@@ -31,21 +30,20 @@
   <div id="board-container">
     <!-- 将棋盤 -->
     <div id="shogi-board">
-      <!-- 盤面セルは JS で生成 -->
+      <!-- 盤面セルはJSで生成 -->
+    </div>
+    <!-- 後手持ち駒エリア：盤面内に絶対配置し、盤面の右上端からすぐ上に表示 -->
+    <div id="top-hand-container">
+      <div id="top-hand">
+        <!-- 後手持ち駒が右から左に一列で並ぶ -->
+      </div>
     </div>
   </div>
 
-  <!-- Captured Pieces Area for Sente (先手) -->
+  <!-- 先手持ち駒エリア：盤面の下延長線上に横長の持ち駒台 -->
   <div id="bottom-hand-container">
     <div id="bottom-hand">
-      <!-- 先手持ち駒が横一列に表示 -->
-    </div>
-  </div>
-
-  <!-- Captured Pieces Area for Gote (後手) -->
-  <div id="top-hand-container">
-    <div id="top-hand">
-      <!-- 後手持ち駒（必要に応じて） -->
+      <!-- 先手持ち駒が左から右に一列で並ぶ -->
     </div>
   </div>
 

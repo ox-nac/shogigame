@@ -1,18 +1,18 @@
 /* ============================= */
-/* 調整用のCSS変数（後から値変更しやすいように） */
+/* 調整用のCSS変数（後から値変更しやすいように設定） */
 /* ============================= */
 :root {
   --host-icon-height: 15px;       /* X Icon の高さ */
   --host-twitter-font-size: 15px; /* @ox_nac のフォントサイズ */
   --title-font-size: 32px;        /* タイトル「将棋道場」の文字サイズ */
   --title-line-height: 1.2;       /* タイトルの行高さ倍率 */
-  --board-width: 451px;          /* 将棋盤の幅（PC版） */
-  --board-height: 451px;         /* 将棋盤の高さ（PC版） */
-  --cell-size: 50px;             /* 各セルのサイズ */
-  --piece-width: 40px;           /* 駒の幅 */
-  --piece-height: 45px;          /* 駒の高さ */
-  --captured-area-height: 50px;  /* 持ち駒台の高さ（駒の高さより少し大きい） */
-  --header-bottom-margin: 10px;   /* ヘッダーと盤面の間隔（小さくすると盤面上辺に近づく） */
+  --board-width: 451px;           /* 将棋盤の幅（PC版） */
+  --board-height: 451px;          /* 将棋盤の高さ（PC版） */
+  --cell-size: 50px;              /* 各セルのサイズ */
+  --piece-width: 40px;            /* 駒の幅 */
+  --piece-height: 45px;           /* 駒の高さ */
+  --captured-area-height: 50px;   /* 持ち駒台の高さ（駒の高さより少し大きい） */
+  --header-bottom-margin: 10px;    /* ヘッダーと盤面の間隔 */
 }
 
 /* ============================= */
@@ -21,22 +21,17 @@
 #header {
   width: var(--board-width);
   margin: 0 auto var(--header-bottom-margin) auto;
-  text-align: left; /* ヘッダー内は左寄せ */
-  font-family: 'Shippori Mincho', serif;  /* フォント指定 */
+  text-align: left;
+  font-family: 'Shippori Mincho', serif;
 }
 
-#title-container {
-  /* タイトルとスポンサー情報を縦に並べる */
-}
-
-h1 {
+#title-container h1 {
   font-size: var(--title-font-size);
   line-height: var(--title-line-height);
   margin: 0;
   font-family: 'Shippori Mincho', serif;
 }
 
-/* スポンサー情報 */
 #sponsor-info {
   margin-top: 5px;
   font-size: 14px;
@@ -44,25 +39,33 @@ h1 {
 }
 
 .sponsor-text {
-  margin-right: 4px;
+  margin-bottom: 4px;
 }
 
+/* host-container: ブロック表示で縦に並べる */
 .host-container {
+  display: block;
+  margin-top: 2px;
+}
+
+.host-container a {
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .host-icon {
   height: var(--host-icon-height);
   width: auto;
-  margin-left: 0;
+  margin: 0;
   vertical-align: middle;
 }
 
 .host-twitter {
   font-size: var(--host-twitter-font-size);
-  margin-left: 0;
+  margin: 0;
   vertical-align: middle;
 }
 
@@ -72,8 +75,10 @@ h1 {
 #board-container {
   width: var(--board-width);
   margin: 0 auto;
+  position: relative; /* 後手持ち駒の絶対配置基準 */
 }
 
+/* 将棋盤 */
 #shogi-board {
   display: grid;
   grid-template-columns: repeat(9, var(--cell-size));
@@ -83,8 +88,29 @@ h1 {
   height: var(--board-height);
 }
 
-/* Captured Pieces Area for Sente (先手) */
-/* 盤の下延長線上に、横長の持ち駒スペースを表示 */
+/* 後手持ち駒エリア: 盤面内に絶対配置し、盤面の右上端からすぐ上に配置 */
+#top-hand-container {
+  position: absolute;
+  /* 盤面上端から持ち駒台の高さ＋10px上に配置 */
+  top: -calc(var(--captured-area-height) + 10px);
+  right: 0;
+  width: var(--board-width);
+  height: var(--captured-area-height);
+}
+
+#top-hand {
+  display: flex;
+  flex-direction: row-reverse;  /* 右から左に並べる */
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  flex-wrap: nowrap;
+  gap: 5px;
+  overflow-x: auto;
+}
+
+/* 先手持ち駒エリア: 盤の下延長線上に横長に配置 */
 #bottom-hand-container {
   width: var(--board-width);
   margin: 5px auto 0 auto;
@@ -95,23 +121,6 @@ h1 {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
-  height: var(--captured-area-height);
-  flex-wrap: nowrap;  /* 一段に並べる */
-  gap: 5px;
-  overflow-x: auto;
-}
-
-/* Captured Pieces Area for Gote (後手) （必要に応じて） */
-#top-hand-container {
-  width: var(--board-width);
-  margin: 5px auto 0 auto;
-}
-#top-hand {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
   width: 100%;
   height: var(--captured-area-height);
   flex-wrap: nowrap;
@@ -140,7 +149,7 @@ h1 {
   border: 1px solid rgba(0, 0, 0, 0.1);
   width: var(--piece-width);
   height: var(--piece-height);
-  position: relative; /* キャプチャ枚数表示用 */
+  position: relative;
   clip-path: polygon(
     50% 0%,      /* 先端：上中央 */
     85% 15%,     /* 右上斜め */
@@ -177,7 +186,6 @@ h1 {
 /* スマホ・タブレット用デザイン（画面幅1024px以下） */
 /* ============================= */
 @media only screen and (max-width: 1024px) {
-  /* ヘッダーは左寄せ */
   #header {
     text-align: left;
     margin-left: 10px;
@@ -186,8 +194,6 @@ h1 {
   h1 {
     justify-content: flex-start;
   }
-  
-  /* 盤面を画面横幅いっぱいに表示 */
   #board-container {
     width: 100vw;
     margin: 0 auto;
@@ -199,16 +205,15 @@ h1 {
     aspect-ratio: 1/1;
     border: 2px solid black;
   }
-  
   /* 後手持ち駒エリアを盤面上部に絶対配置 */
   #top-hand-container {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -calc(var(--captured-area-height) + 10px);
+    right: 0;
     width: 100vw;
+    height: var(--captured-area-height);
     margin: 0;
   }
-  
   /* 先手持ち駒エリアを盤面下部に絶対配置 */
   #bottom-hand-container {
     position: absolute;
@@ -217,7 +222,6 @@ h1 {
     width: 100vw;
     margin: 0;
   }
-  
   #top-hand, #bottom-hand {
     display: flex;
     flex-direction: row;

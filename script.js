@@ -48,7 +48,7 @@ let currentTurn = "bottom";
 let topHand = [];
 let bottomHand = [];
 
-// 将棋盤の HTML 要素を取得
+// 将棋盤のHTML要素を取得
 const boardElement = document.getElementById("shogi-board");
 
 /**
@@ -85,8 +85,8 @@ function renderBoard() {
 
 /**
  * renderHands()
- * 持ち駒をグループ化して描画します。
- * 同じ駒が複数ある場合は、1つの駒アイコンに「×n」と表示します。
+ * 持ち駒（捕獲した駒）をグループ化して描画します。
+ * 同じ駒が複数捕獲されている場合、1つのアイコンに「×n」と表示します。
  */
 function renderHands() {
   // 後手持ち駒エリア (#top-hand)
@@ -117,7 +117,7 @@ function renderHands() {
     }
     topHandDiv.appendChild(pieceElem);
   }
-
+  
   // 先手持ち駒エリア (#bottom-hand)
   const bottomHandDiv = document.getElementById("bottom-hand");
   bottomHandDiv.innerHTML = "";
@@ -150,7 +150,8 @@ function renderHands() {
 
 /**
  * selectPiece(x, y)
- * 指定セルの駒を選択します。手番と駒の向きが一致する場合のみ選択可能です。
+ * 指定されたセルの駒を選択状態にします。
+ * 手番と駒の向きが一致している場合のみ選択可能です。
  */
 function selectPiece(x, y) {
   const pieceObj = board[y][x];
@@ -168,9 +169,9 @@ function selectPiece(x, y) {
 
 /**
  * movePiece(x, y)
- * 選択中の駒を指定セルに移動します。
- * ・移動先に自分の駒がある場合は無効。
- * ・移動先に敵の駒がある場合、捕獲して持ち駒リストに追加。
+ * 選択中の駒を指定されたセルへ移動します。
+ * ・移動先に自分の駒があれば無効。
+ * ・移動先に敵の駒があれば捕獲して持ち駒リストに追加。
  * ・移動後、手番を交代し盤面と持ち駒エリアを再描画します。
  */
 function movePiece(x, y) {
