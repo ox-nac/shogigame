@@ -203,35 +203,51 @@ body {
 /* スマホ・タブレット用デザイン（画面幅1024px以下） */
 /* ============================= */
 @media only screen and (max-width: 1024px) {
+  /* body はすでに margin:0; padding:0; なのでOK */
+
   /* ヘッダーをデバイス幅いっぱいに */
   #header {
-    width: 100vw;
-    margin: 0;    /* 余白を消す */
+    width: 100vw;     /* 横幅いっぱい */
+    margin: 0;        /* 左右余白を消す */
   }
+
   /* 盤面コンテナをデバイス幅いっぱいに */
   #board-container {
-    width: 100vw;
-    margin: 0;    /* 余白を消す */
+    width: 100vw;     /* 横幅いっぱい */
+    margin: 0;        /* 余白を消す */
     position: relative;
   }
-  /* 将棋盤を左右端に合わせる */
+
+  /* 将棋盤を左右端に合わせる（aspect-ratio:1/1 で正方形） */
   #shogi-board {
     width: 100vw;
     height: auto;
     aspect-ratio: 1 / 1;
-    border: 2px solid black;
+    border: 2px solid black; /* 盤面の黒枠 */
   }
-  /* 後手持ち駒エリアも同様に幅100% */
+
+  /* 後手の持ち駒エリア：幅100vwにして絶対配置 */
   #top-hand-container {
-    top: -60px; /* 調整可能 */
+    top: -60px;           /* 必要に応じて微調整 */
     right: 0;
     width: 100vw;
     height: var(--captured-area-height);
+    margin: 0;            /* 余白を消す */
+  }
+
+  /* 先手の持ち駒エリアも幅100vwに */
+  #bottom-hand-container {
+    position: absolute;   /* 下部に絶対配置する場合 */
+    bottom: 0;
+    left: 0;
+    width: 100vw;
     margin: 0;
   }
+
+  /* 後手・先手の持ち駒を横並びに */
   #top-hand, #bottom-hand {
     display: flex;
-    flex-direction: row;
+    flex-direction: row;  /* row-reverseを使う場合はそちらに変更 */
     flex-wrap: nowrap;
     gap: 5px;
     overflow-x: auto;
