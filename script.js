@@ -40,14 +40,11 @@ let selectedPiece = null;
 let selectedPosition = null;
 let currentTurn = "bottom";
 
-// 後手: topHand, 先手: bottomHand
 let topHand = [];
 let bottomHand = [];
 
-// 盤面要素
 const boardElement = document.getElementById("shogi-board");
 
-/** 盤面を描画 */
 function renderBoard() {
   boardElement.innerHTML = "";
   for (let y = 0; y < 9; y++) {
@@ -61,7 +58,6 @@ function renderBoard() {
           selectPiece(x, y);
         }
       };
-
       const pieceObj = board[y][x];
       if (pieceObj) {
         const piece = document.createElement("div");
@@ -77,18 +73,16 @@ function renderBoard() {
   }
 }
 
-/** 持ち駒を描画 (同じ駒が複数あれば xN 表示) */
 function renderHands() {
-  // 後手の持ち駒
   const topHandDiv = document.getElementById("top-hand");
   topHandDiv.innerHTML = "";
   let groupTop = {};
-  topHand.forEach(obj => {
-    let key = obj.text + "_" + obj.rotated;
+  topHand.forEach(pieceObj => {
+    let key = pieceObj.text + "_" + pieceObj.rotated;
     if (groupTop[key]) {
       groupTop[key].count++;
     } else {
-      groupTop[key] = { piece: obj, count: 1 };
+      groupTop[key] = { piece: pieceObj, count: 1 };
     }
   });
   for (let key in groupTop) {
@@ -108,16 +102,15 @@ function renderHands() {
     topHandDiv.appendChild(pieceElem);
   }
 
-  // 先手の持ち駒
   const bottomHandDiv = document.getElementById("bottom-hand");
   bottomHandDiv.innerHTML = "";
   let groupBottom = {};
-  bottomHand.forEach(obj => {
-    let key = obj.text + "_" + obj.rotated;
+  bottomHand.forEach(pieceObj => {
+    let key = pieceObj.text + "_" + pieceObj.rotated;
     if (groupBottom[key]) {
       groupBottom[key].count++;
     } else {
-      groupBottom[key] = { piece: obj, count: 1 };
+      groupBottom[key] = { piece: pieceObj, count: 1 };
     }
   });
   for (let key in groupBottom) {
@@ -138,7 +131,6 @@ function renderHands() {
   }
 }
 
-/** 駒を選択 */
 function selectPiece(x, y) {
   const pieceObj = board[y][x];
   if (!pieceObj) return;
@@ -152,20 +144,15 @@ function selectPiece(x, y) {
   }
 }
 
-/** 駒を移動 */
 function movePiece(x, y) {
   if (!selectedPiece) return;
   const destPiece = board[y][x];
   const isTopTurn = (currentTurn === "top");
-
-  // 移動先に自分の駒があれば無効
   if (destPiece && destPiece.rotated === isTopTurn) {
     selectedPiece = null;
     selectedPosition = null;
     return;
   }
-
-  // 敵の駒があれば捕獲
   if (destPiece && destPiece.rotated !== isTopTurn) {
     const capturedPiece = destPiece;
     capturedPiece.rotated = isTopTurn;
@@ -175,20 +162,14 @@ function movePiece(x, y) {
       bottomHand.push(capturedPiece);
     }
   }
-
-  // 移動
   board[selectedPosition.y][selectedPosition.x] = null;
   board[y][x] = selectedPiece;
   selectedPiece = null;
   selectedPosition = null;
-
-  // 手番交代
   currentTurn = isTopTurn ? "bottom" : "top";
-
   renderBoard();
   renderHands();
 }
 
-// 初期描画
 renderBoard();
 renderHands();

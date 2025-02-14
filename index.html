@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ヘッダー部分（上部に表示） -->
+  <!-- ヘッダー：画面上部の左上に配置（盤面の外） -->
   <div id="header">
     <div id="title-container">
       <h1>将棋道場</h1>
@@ -25,22 +25,27 @@
     </div>
   </div>
 
-  <!-- 将棋盤コンテナ -->
+  <!-- 盤面コンテナ -->
   <div id="board-container">
-    <div id="shogi-board"></div>
-
-    <!-- 後手の持ち駒エリア：盤面右上あたりに配置 -->
+    <div id="shogi-board">
+      <!-- 盤面セルはJSで生成 -->
+    </div>
+    <!-- 後手持ち駒エリア：盤面内に絶対配置し、右上の空白（盤面上端から60px上）に配置 -->
     <div id="top-hand-container">
-      <div id="top-hand"></div>
+      <div id="top-hand">
+        <!-- 後手持ち駒が右→左に一列に並ぶ -->
+      </div>
     </div>
   </div>
 
-  <!-- 先手の持ち駒エリア：盤面の下延長線上 -->
+  <!-- 先手持ち駒エリア：盤面の下延長線上に横長に配置 -->
   <div id="bottom-hand-container">
-    <div id="bottom-hand"></div>
+    <div id="bottom-hand">
+      <!-- 先手持ち駒が左から右に一列に並ぶ -->
+    </div>
   </div>
 
-  <!-- JSファイル -->
+  <!-- JavaScriptファイルの読み込み -->
   <script src="script.js"></script>
 </body>
 </html>

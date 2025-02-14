@@ -1,18 +1,23 @@
+/* ============================= */
+/* 調整用のCSS変数（変更しやすいように設定） */
+/* ============================= */
 :root {
-  --host-icon-height: 15px;       
-  --host-twitter-font-size: 15px; 
-  --title-font-size: 32px;        
-  --title-line-height: 1.2;       
-  --board-width: 451px;           
-  --board-height: 451px;          
-  --cell-size: 50px;              
-  --piece-width: 40px;            
-  --piece-height: 45px;           
-  --captured-area-height: 50px;   
-  --header-bottom-margin: 10px;   
+  --host-icon-height: 15px;       /* X Icon の高さ */
+  --host-twitter-font-size: 15px; /* @ox_nac のフォントサイズ */
+  --title-font-size: 32px;        /* タイトル「将棋道場」の文字サイズ */
+  --title-line-height: 1.2;       /* タイトルの行高さ倍率 */
+  --board-width: 451px;           /* PC版の将棋盤の幅 */
+  --board-height: 451px;          /* PC版の将棋盤の高さ */
+  --cell-size: 50px;              /* 各セルのサイズ */
+  --piece-width: 40px;            /* 駒の幅 */
+  --piece-height: 45px;           /* 駒の高さ */
+  --captured-area-height: 50px;   /* 持ち駒台の高さ（駒の高さより少し大きい） */
+  --header-bottom-margin: 10px;    /* ヘッダーと盤面の間隔 */
 }
 
-/* ヘッダー部分 */
+/* ============================= */
+/* ヘッダー部分 (PC版) */
+/* ============================= */
 #header {
   width: var(--board-width);
   margin: 0 auto var(--header-bottom-margin) auto;
@@ -37,6 +42,7 @@
   margin-bottom: 4px;
 }
 
+/* host-container: ブロック表示で縦に並べる */
 .host-container {
   display: block;
   margin-top: 2px;
@@ -63,14 +69,15 @@
   vertical-align: middle;
 }
 
-/* 将棋盤コンテナ */
+/* ============================= */
+/* Board and Captured Pieces Layout (PC版) */
+/* ============================= */
 #board-container {
   width: var(--board-width);
   margin: 0 auto;
-  position: relative; /* 後手持ち駒エリアを絶対配置する基準 */
+  position: relative; /* 絶対配置の基準 */
 }
 
-/* 将棋盤 */
 #shogi-board {
   display: grid;
   grid-template-columns: repeat(9, var(--cell-size));
@@ -80,19 +87,20 @@
   height: var(--board-height);
 }
 
-/* 後手の持ち駒エリア：盤面右上に配置し、さらに上にずらす */
+/* 後手の持ち駒エリア：盤面内に絶対配置し、盤面右上端からさらに上にずらす */
 #top-hand-container {
   position: absolute;
-  top: -60px;   /* 盤面上端より60pxさらに上へ */
+  top: -60px; /* 盤面上端から60px上に配置（必要に応じて調整） */
   right: 0;
   width: var(--board-width);
   height: var(--captured-area-height);
+  z-index: 10; /* 前面に表示 */
 }
 
-/* 後手駒を右→左に並べる */
+/* 後手持ち駒エリア内部：右から左に並べる */
 #top-hand {
   display: flex;
-  flex-direction: row-reverse; /* 新しい駒が右端に追加 */
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
@@ -101,7 +109,7 @@
   overflow-x: auto;
 }
 
-/* 先手の持ち駒エリア：盤面下延長線上 */
+/* 先手の持ち駒エリア：盤面の下延長線上に横長に配置 */
 #bottom-hand-container {
   width: var(--board-width);
   margin: 5px auto 0 auto;
@@ -118,7 +126,9 @@
   overflow-x: auto;
 }
 
-/* セルと駒の共通スタイル */
+/* ============================= */
+/* Board Cells and Pieces */
+/* ============================= */
 .cell {
   width: var(--cell-size);
   height: var(--cell-size);
@@ -163,12 +173,16 @@
   border-radius: 3px;
 }
 
-/* 後手の駒は逆さま */
+/* ============================= */
+/* Utility */
+/* ============================= */
 .rotated {
   transform: rotate(180deg);
 }
 
-/* スマホ・タブレット (max-width:1024px) 用デザイン */
+/* ============================= */
+/* スマホ・タブレット用デザイン（画面幅1024px以下） */
+/* ============================= */
 @media only screen and (max-width: 1024px) {
   #header {
     width: 100vw;
@@ -176,17 +190,28 @@
   }
   #board-container {
     width: 100vw;
+    margin: 0;
     position: relative;
   }
   #shogi-board {
     width: 100vw;
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1/1;
+    border: 2px solid black;
   }
-  /* 後手持ち駒エリア：画面右上 */
   #top-hand-container {
-    top: -60px; /* お好みで調整 */
+    top: -60px;
     right: 0;
     width: 100vw;
+    height: var(--captured-area-height);
+    margin: 0;
+  }
+  #top-hand, #bottom-hand {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 5px;
+    overflow-x: auto;
+    height: var(--captured-area-height);
   }
 }
