@@ -1,7 +1,7 @@
 /**
  * 将棋盤の初期配置
  * - text: 駒の文字
- * - rotated: trueなら上側（後手）、falseなら下側（先手）
+ * - rotated: trueなら後手、falseなら先手
  * 盤上に駒がない場合は null を設定
  */
 const board = [
@@ -36,25 +36,18 @@ const board = [
   ]
 ];
 
-// 選択中の駒とその座標を保持する変数
 let selectedPiece = null;
 let selectedPosition = null;
-// 現在の手番。初手は先手（下側）なので "bottom"
 let currentTurn = "bottom";
 
-// 持ち駒リスト
-// topHand: 後手が取った駒（#top-hand に表示）
-// bottomHand: 先手が取った駒（#bottom-hand に表示）
+// 後手: topHand, 先手: bottomHand
 let topHand = [];
 let bottomHand = [];
 
-// 将棋盤のHTML要素を取得
+// 盤面要素
 const boardElement = document.getElementById("shogi-board");
 
-/**
- * renderBoard()
- * 盤面を生成して描画します。
- */
+/** 盤面を描画 */
 function renderBoard() {
   boardElement.innerHTML = "";
   for (let y = 0; y < 9; y++) {
@@ -68,6 +61,7 @@ function renderBoard() {
           selectPiece(x, y);
         }
       };
+
       const pieceObj = board[y][x];
       if (pieceObj) {
         const piece = document.createElement("div");
@@ -83,22 +77,18 @@ function renderBoard() {
   }
 }
 
-/**
- * renderHands()
- * 持ち駒（捕獲した駒）をグループ化して描画します。
- * 同じ駒が複数捕獲されている場合、1つのアイコンに「×n」と表示します。
- */
+/** 持ち駒を描画 (同じ駒が複数あれば xN 表示) */
 function renderHands() {
-  // 後手持ち駒エリア (#top-hand)
+  // 後手の持ち駒
   const topHandDiv = document.getElementById("top-hand");
   topHandDiv.innerHTML = "";
   let groupTop = {};
-  topHand.forEach(pieceObj => {
-    let key = pieceObj.text + "_" + pieceObj.rotated;
+  topHand.forEach(obj => {
+    let key = obj.text + "_" + obj.rotated;
     if (groupTop[key]) {
-      groupTop[key].count += 1;
+      groupTop[key].count++;
     } else {
-      groupTop[key] = { piece: pieceObj, count: 1 };
+      groupTop[key] = { piece: obj, count: 1 };
     }
   });
   for (let key in groupTop) {
@@ -117,17 +107,17 @@ function renderHands() {
     }
     topHandDiv.appendChild(pieceElem);
   }
-  
-  // 先手持ち駒エリア (#bottom-hand)
+
+  // 先手の持ち駒
   const bottomHandDiv = document.getElementById("bottom-hand");
   bottomHandDiv.innerHTML = "";
   let groupBottom = {};
-  bottomHand.forEach(pieceObj => {
-    let key = pieceObj.text + "_" + pieceObj.rotated;
+  bottomHand.forEach(obj => {
+    let key = obj.text + "_" + obj.rotated;
     if (groupBottom[key]) {
-      groupBottom[key].count += 1;
+      groupBottom[key].count++;
     } else {
-      groupBottom[key] = { piece: pieceObj, count: 1 };
+      groupBottom[key] = { piece: obj, count: 1 };
     }
   });
   for (let key in groupBottom) {
@@ -148,17 +138,12 @@ function renderHands() {
   }
 }
 
-/**
- * selectPiece(x, y)
- * 指定されたセルの駒を選択状態にします。
- * 手番と駒の向きが一致している場合のみ選択可能です。
- */
+/** 駒を選択 */
 function selectPiece(x, y) {
   const pieceObj = board[y][x];
   if (!pieceObj) return;
   const isTopTurn = (currentTurn === "top");
-  const isPieceTopSide = pieceObj.rotated;
-  if (isTopTurn === isPieceTopSide) {
+  if (pieceObj.rotated === isTopTurn) {
     selectedPiece = pieceObj;
     selectedPosition = { x, y };
   } else {
@@ -167,22 +152,20 @@ function selectPiece(x, y) {
   }
 }
 
-/**
- * movePiece(x, y)
- * 選択中の駒を指定されたセルへ移動します。
- * ・移動先に自分の駒があれば無効。
- * ・移動先に敵の駒があれば捕獲して持ち駒リストに追加。
- * ・移動後、手番を交代し盤面と持ち駒エリアを再描画します。
- */
+/** 駒を移動 */
 function movePiece(x, y) {
   if (!selectedPiece) return;
   const destPiece = board[y][x];
   const isTopTurn = (currentTurn === "top");
+
+  // 移動先に自分の駒があれば無効
   if (destPiece && destPiece.rotated === isTopTurn) {
     selectedPiece = null;
     selectedPosition = null;
     return;
   }
+
+  // 敵の駒があれば捕獲
   if (destPiece && destPiece.rotated !== isTopTurn) {
     const capturedPiece = destPiece;
     capturedPiece.rotated = isTopTurn;
@@ -192,11 +175,16 @@ function movePiece(x, y) {
       bottomHand.push(capturedPiece);
     }
   }
+
+  // 移動
   board[selectedPosition.y][selectedPosition.x] = null;
   board[y][x] = selectedPiece;
   selectedPiece = null;
   selectedPosition = null;
+
+  // 手番交代
   currentTurn = isTopTurn ? "bottom" : "top";
+
   renderBoard();
   renderHands();
 }

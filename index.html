@@ -9,13 +9,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header: 盤面の外、上部（左上）に配置 -->
+  <!-- ヘッダー部分（上部に表示） -->
   <div id="header">
     <div id="title-container">
       <h1>将棋道場</h1>
       <div id="sponsor-info">
         <div class="sponsor-text">主催者：涼一</div>
-        <!-- X Icon と @ox_nac を縦に配置 -->
         <div class="host-container">
           <a href="https://x.com/ox_nac" target="_blank" class="host-link">
             <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
@@ -26,28 +25,22 @@
     </div>
   </div>
 
-  <!-- Board Container -->
+  <!-- 将棋盤コンテナ -->
   <div id="board-container">
-    <!-- 将棋盤 -->
-    <div id="shogi-board">
-      <!-- 盤面セルはJSで生成 -->
-    </div>
-    <!-- 後手持ち駒エリア：盤面内に絶対配置し、盤面の右上端からすぐ上に表示 -->
+    <div id="shogi-board"></div>
+
+    <!-- 後手の持ち駒エリア：盤面右上あたりに配置 -->
     <div id="top-hand-container">
-      <div id="top-hand">
-        <!-- 後手持ち駒が右から左に一列で並ぶ -->
-      </div>
+      <div id="top-hand"></div>
     </div>
   </div>
 
-  <!-- 先手持ち駒エリア：盤面の下延長線上に横長の持ち駒台 -->
+  <!-- 先手の持ち駒エリア：盤面の下延長線上 -->
   <div id="bottom-hand-container">
-    <div id="bottom-hand">
-      <!-- 先手持ち駒が左から右に一列で並ぶ -->
-    </div>
+    <div id="bottom-hand"></div>
   </div>
 
-  <!-- JavaScriptファイルの読み込み -->
+  <!-- JSファイル -->
   <script src="script.js"></script>
 </body>
 </html>
