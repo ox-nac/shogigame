@@ -202,56 +202,39 @@ body {
 /* ============================= */
 /* スマホ・タブレット用デザイン（画面幅1024px以下） */
 /* ============================= */
+/* ============================= */
+/* スマホ・タブレット用デザイン（画面幅1024px以下） */
+/* ============================= */
 @media only screen and (max-width: 1024px) {
-  /* body は既に margin:0; padding:0; なのでOK */
-
-  /* ヘッダーを画面幅いっぱいに */
-  #header {
-    width: 100vw;
-    margin: 0;  
-    text-align: left;
+  /* bodyの余白を削除し、背景を適用 */
+  body {
+    background-color: #FFFFDD;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* スクロール発生を防ぐ */
   }
 
-  /* 盤面コンテナを画面幅いっぱいに */
+  /* 画面いっぱいにするための盤面コンテナ */
   #board-container {
     width: 100vw;
-    margin: 0;
+    height: 100vh;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* 将棋盤を左右端いっぱいに拡大 */
+  /* 画面いっぱいに将棋盤を拡大 */
   #shogi-board {
     width: 100vw;
-    height: auto;
-    aspect-ratio: 1 / 1;  /* 正方形に保つ */
+    height: 100vh;
+    max-width: 100vh; /* 縦長端末で横を超えないように */
+    max-height: 100vw; /* 横長端末で縦を超えないように */
+    aspect-ratio: 1 / 1; /* 正方形を維持 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border: 2px solid black;
-  }
-
-  /* 後手持ち駒エリア：幅を100vwにして絶対配置 */
-  #top-hand-container {
-    top: -60px; /* 盤面上端からさらに上にずらす。必要に応じて微調整 */
-    right: 0;
-    width: 100vw;
-    height: var(--captured-area-height);
-    margin: 0;
-  }
-
-  /* 先手持ち駒エリア：幅100vwにし、絶対配置 */
-  #bottom-hand-container {
-    position: absolute; 
-    bottom: 0;
-    left: 0;
-    width: 100vw;
-    margin: 0;
-  }
-
-  /* 後手・先手の持ち駒エリアを横一列に並べる */
-  #top-hand, #bottom-hand {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 5px;
-    overflow-x: auto;
-    height: var(--captured-area-height);
   }
 }
