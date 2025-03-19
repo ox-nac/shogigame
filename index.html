@@ -9,26 +9,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
   <!-- 盤面コンテナ -->
   <div id="board-container">
     <div id="shogi-board">
       <!-- 盤面セルは script.js により生成 -->
     </div>
-    <!-- 後手の持ち駒エリア -->
+    <!-- 持ち駒エリア -->
     <div id="top-hand-container">
       <div id="top-hand"></div>
     </div>
-    <!-- 先手の持ち駒エリア -->
     <div id="bottom-hand-container">
       <div id="bottom-hand"></div>
     </div>
+    <!-- 初期配置ラベル -->
+    <div id="gote-label" class="side-label gote-label">後手</div>
+    <div id="sente-label" class="side-label sente-label">先手</div>
+    <!-- タイマー表示用 -->
+    <div id="gote-timer" class="timer"></div>
+    <div id="sente-timer" class="timer"></div>
   </div>
   
   <!-- JavaScriptファイルの読み込み -->
   <script src="script.js"></script>
   
-  <!-- ユーザーエージェント判定：スマホ・タブレットのみ表示 -->
+  <!-- ユーザーエージェント判定 -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const isMobileOrTablet =

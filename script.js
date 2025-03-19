@@ -4,7 +4,116 @@ let selectedPiece = null;
 let selectedPosition = null;
 let selectedHandPiece = null; // 持ち駒ドロップ用に選択中の駒（文字）
 let topHand = [];    // 後手側が捕獲した駒（rotated:true）
-let bottomHand = []; // 先手側が捕獲した駒（rotated:false)
+let bottomHand = []; // 先手側が捕獲した駒（rotated:false）
+let gameOver = false; // ゲーム終了フラグ
+
+// タイマー（各10分＝600秒）
+let senteTime = 600;
+let goteTime = 600;
+let timerInterval = setInterval(timerTick, 1000);
+
+// --- カスタムアラート関数 ---
+function customAlert(message, isGote) {
+  const alertDiv = document.createElement('div');
+  alertDiv.textContent = message;
+  alertDiv.style.position = 'fixed';
+  alertDiv.style.top = '50%';
+  alertDiv.style.left = '50%';
+  alertDiv.style.transform = 'translate(-50%, -50%)' + (isGote ? ' rotate(180deg)' : '');
+  alertDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  alertDiv.style.color = '#fff';
+  alertDiv.style.padding = '20px';
+  alertDiv.style.borderRadius = '8px';
+  alertDiv.style.zIndex = 10000;
+  document.body.appendChild(alertDiv);
+  setTimeout(() => {
+    document.body.removeChild(alertDiv);
+  }, 2000);
+}
+
+// --- カスタム勝利アラート関数 ---
+function customVictoryAlert(message, isGote) {
+  const alertDiv = document.createElement('div');
+  alertDiv.textContent = message;
+  alertDiv.style.position = 'fixed';
+  alertDiv.style.top = '50%';
+  alertDiv.style.left = '50%';
+  alertDiv.style.transform = 'translate(-50%, -50%)' + (isGote ? ' rotate(180deg)' : '');
+  alertDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  alertDiv.style.color = '#fff';
+  alertDiv.style.padding = '20px';
+  alertDiv.style.borderRadius = '8px';
+  alertDiv.style.zIndex = 10000;
+  document.body.appendChild(alertDiv);
+  setTimeout(() => {
+    document.body.removeChild(alertDiv);
+  }, 2000);
+}
+
+// --- 警告音を鳴らす関数 ---
+function playWarningSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = ctx.createOscillator();
+  oscillator.frequency.value = 1000;
+  oscillator.connect(ctx.destination);
+  oscillator.start();
+  setTimeout(() => {
+    oscillator.stop();
+    ctx.close();
+  }, 300);
+}
+
+// --- タイマー更新処理 ---
+function timerTick() {
+  if (gameOver) return;
+  if (currentTurn === "sente") {
+    senteTime--;
+    if (senteTime <= 0) {
+      gameOver = true;
+      customVictoryAlert("あなたの勝ちです", true);
+      renderTimers();
+      return;
+    }
+    if (senteTime < 60) {
+      playWarningSound();
+    }
+  } else if (currentTurn === "gote") {
+    goteTime--;
+    if (goteTime <= 0) {
+      gameOver = true;
+      customVictoryAlert("あなたの勝ちです", false);
+      renderTimers();
+      return;
+    }
+    if (goteTime < 60) {
+      playWarningSound();
+    }
+  }
+  renderTimers();
+}
+
+function renderTimers() {
+  const senteTimerElem = document.getElementById("sente-timer");
+  const goteTimerElem = document.getElementById("gote-timer");
+  senteTimerElem.textContent = formatTime(senteTime);
+  goteTimerElem.textContent = formatTime(goteTime);
+  if (senteTime < 180) {
+    senteTimerElem.classList.add("red");
+  } else {
+    senteTimerElem.classList.remove("red");
+  }
+  if (goteTime < 180) {
+    goteTimerElem.classList.add("red");
+  } else {
+    goteTimerElem.classList.remove("red");
+  }
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m.toString() + ":" + s.toString().padStart(2, "0");
+}
 
 // ===== 初期盤面の状態（標準配置） =====
 const initialBoard = [
@@ -94,7 +203,7 @@ let board = initialBoard;
 const pieceMoves = {
   "歩": [[0, -1]],
   "香": [...Array(8).keys()].map(i => [0, -(i + 1)]),
-  "桂": [[-1, -2], [1, -2]],  // 桂馬は左右1マス、前2マス（ワープ）
+  "桂": [[-1, -2], [1, -2]],
   "銀": [[0, -1], [-1, -1], [1, -1], [-1, 1], [1, 1]],
   "金": [[0, -1], [-1, -1], [1, -1], [-1, 0], [1, 0], [0, 1]],
   "玉": [[0, -1], [-1, -1], [1, -1], [-1, 0], [1, 0], [0, 1], [-1, 1], [1, 1]],
@@ -102,18 +211,13 @@ const pieceMoves = {
   "角": [...Array(8).keys()].flatMap(i => [[-(i + 1), -(i + 1)], [i + 1, i + 1], [-(i + 1), i + 1], [i + 1, -(i + 1)]])
 };
 
-// --- 成り後の駒の移動ルール ---
-// 歩、香、桂、銀の成りは金と同じ動き
 pieceMoves["と"] = pieceMoves["金"];
 pieceMoves["成香"] = pieceMoves["金"];
 pieceMoves["成桂"] = pieceMoves["金"];
 pieceMoves["成銀"] = pieceMoves["金"];
-// 角の成り（馬）は角の動きに加えて上下左右の1マス移動
 pieceMoves["馬"] = pieceMoves["角"].concat([[0, -1], [0, 1], [-1, 0], [1, 0]]);
-// 飛の成り（龍）は飛の動きに加えて斜め1マス移動
 pieceMoves["龍"] = pieceMoves["飛"].concat([[-1, -1], [-1, 1], [1, -1], [1, 1]]);
 
-// --- 成り可能な駒のマッピング ---
 const promotionMap = {
   "歩": "と",
   "香": "成香",
@@ -122,9 +226,7 @@ const promotionMap = {
   "角": "馬",
   "飛": "龍"
 };
-// 成り駒の文字一覧
 const promotedSymbols = Object.values(promotionMap);
-// 捕獲時に成り駒を元に戻すためのマッピング
 const demotionMap = {
   "と": "歩",
   "成香": "香",
@@ -142,9 +244,7 @@ function isValidMove(piece, fromX, fromY, toX, toY, board) {
   if (selectedPiece && selectedPiece.rotated) {
     moves = moves.map(([mx, my]) => [mx, -my]);
   }
-  // 該当する移動先かどうかチェック
   if (moves.some(([mx, my]) => mx === dx && my === dy)) {
-    // 桂馬はワープ移動なので経路確認をスキップ
     if (selectedPiece && selectedPiece.text === "桂") {
       return true;
     }
@@ -165,8 +265,6 @@ function isPathClear(fromX, fromY, toX, toY, board, piece) {
   return true;
 }
 
-// --- 駒が成るべきか判定する関数 ---
-// ※ドロップ後に置かれた駒は fromDrop フラグが立っている場合、移動後も成る資格があります。
 function shouldPromote(piece, toY) {
   if (!promotionMap.hasOwnProperty(piece.text)) return false;
   if (promotedSymbols.includes(piece.text)) return false;
@@ -176,26 +274,21 @@ function shouldPromote(piece, toY) {
   return false;
 }
 
-// --- 駒を成る関数 ---
 function promotePiece(piece) {
   return promotionMap[piece.text] || piece.text;
 }
 
-// --- 持ち駒ドロップ処理 ---
 function dropHandPiece(x, y) {
-  // まず、盤上に既に駒があるかチェック
   if (board[y][x]) {
     selectedHandPiece = null;
     renderBoard();
     renderHands();
     return;
   }
-  // --- 追加: ここで持ち駒の種類ごとにドロップ可能な行をチェック ---
   if (currentTurn === "sente") {
-    // Sente：盤上の行番号0が相手の一段目、行1が二段目
     if (selectedHandPiece === "歩" || selectedHandPiece === "香") {
       if (y === 0) {
-        alert("歩・香は相手の一段目には置けません。");
+        customAlert("歩・香は相手の一段目には置けません。", currentTurn === "gote");
         selectedHandPiece = null;
         renderHands();
         return;
@@ -203,17 +296,16 @@ function dropHandPiece(x, y) {
     }
     if (selectedHandPiece === "桂") {
       if (y <= 1) {
-        alert("桂は相手の一段目、二段目には置けません。");
+        customAlert("桂は相手の一段目、二段目には置けません。", currentTurn === "gote");
         selectedHandPiece = null;
         renderHands();
         return;
       }
     }
   } else {
-    // Gote：盤上の行番号8が相手の一段目、7が二段目
     if (selectedHandPiece === "歩" || selectedHandPiece === "香") {
       if (y === 8) {
-        alert("歩・香は相手の一段目には置けません。");
+        customAlert("歩・香は相手の一段目には置けません。", currentTurn === "gote");
         selectedHandPiece = null;
         renderHands();
         return;
@@ -221,14 +313,14 @@ function dropHandPiece(x, y) {
     }
     if (selectedHandPiece === "桂") {
       if (y >= 7) {
-        alert("桂は相手の一段目、二段目には置けません。");
+        customAlert("桂は相手の一段目、二段目には置けません。", currentTurn === "gote");
         selectedHandPiece = null;
         renderHands();
         return;
       }
     }
   }
-  // 通常のドロップ処理
+  
   let handArray;
   if (currentTurn === "sente") {
     handArray = bottomHand;
@@ -237,7 +329,6 @@ function dropHandPiece(x, y) {
   }
   const index = handArray.findIndex(piece => piece.text === selectedHandPiece);
   if (index === -1) return;
-  // 新たに盤上に置く駒。ドロップ位置が相手陣なら fromDrop フラグをセット
   const newPiece = { text: selectedHandPiece, rotated: currentTurn === "gote" };
   if ((!newPiece.rotated && y < 3) || (newPiece.rotated && y > 5)) {
     newPiece.fromDrop = true;
@@ -250,7 +341,6 @@ function dropHandPiece(x, y) {
   renderHands();
 }
 
-// ===== 駒の移動・捕獲処理 =====
 function movePiece(x, y) {
   if (!selectedPiece || !selectedPosition) return;
   const fromX = selectedPosition.x;
@@ -269,6 +359,27 @@ function movePiece(x, y) {
   }
   if (board[y][x]) {
     const capturedPiece = board[y][x];
+    if (capturedPiece.text === "玉") {
+      customVictoryAlert("あなたの勝ちです", currentTurn === "gote");
+      if (demotionMap.hasOwnProperty(capturedPiece.text)) {
+        capturedPiece.text = demotionMap[capturedPiece.text];
+      }
+      capturedPiece.rotated = !capturedPiece.rotated;
+      delete capturedPiece.fromDrop;
+      if (selectedPiece.rotated) {
+        topHand.push(capturedPiece);
+      } else {
+        bottomHand.push(capturedPiece);
+      }
+      board[fromY][fromX] = null;
+      board[y][x] = selectedPiece;
+      selectedPiece = null;
+      selectedPosition = null;
+      gameOver = true;
+      renderBoard();
+      renderHands();
+      return;
+    }
     if (demotionMap.hasOwnProperty(capturedPiece.text)) {
       capturedPiece.text = demotionMap[capturedPiece.text];
     }
@@ -293,8 +404,8 @@ function movePiece(x, y) {
   renderHands();
 }
 
-// ===== セルクリック処理 =====
 function handleCellClick(row, col, cell) {
+  if (gameOver) return;
   if (selectedHandPiece) {
     dropHandPiece(col, row);
     return;
@@ -321,7 +432,6 @@ function pieceBelongsToCurrentTurn(piece) {
          (currentTurn === "gote" && piece.rotated === true);
 }
 
-// ===== 持ち駒クリック処理 =====
 function handleHandClick(pieceText, handElement) {
   if ((currentTurn === "sente" && handElement.id !== "bottom-hand") ||
       (currentTurn === "gote" && handElement.id !== "top-hand")) {
@@ -335,7 +445,6 @@ function handleHandClick(pieceText, handElement) {
   renderHands();
 }
 
-// ===== 盤面の描画 =====
 function renderBoard() {
   const boardElement = document.getElementById("shogi-board");
   boardElement.innerHTML = "";
@@ -356,7 +465,6 @@ function renderBoard() {
         const pieceElem = document.createElement("div");
         pieceElem.classList.add("piece");
         pieceElem.textContent = pieceData.text;
-        // 成香、成桂、成銀の場合、small-promoted クラスで縦書き表示と文字サイズ調整
         if (["成香", "成桂", "成銀"].includes(pieceData.text)) {
           pieceElem.classList.add("small-promoted");
         }
@@ -373,7 +481,6 @@ function renderBoard() {
   }
 }
 
-// ===== 持ち駒の描画 =====
 function renderHands() {
   const topHandContainer = document.getElementById("top-hand");
   topHandContainer.innerHTML = "";
@@ -447,6 +554,6 @@ function renderHands() {
   }
 }
 
-// ===== 初回描画 =====
 renderBoard();
 renderHands();
+renderTimers();

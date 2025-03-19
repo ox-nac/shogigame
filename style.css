@@ -12,9 +12,9 @@ html, body {
 /* CSS変数による調整用設定 */
 :root {
   /* 拡大縮小倍率と盤面の座標オフセット */
-  --scale-factor: 0.97;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
-  --board-offset-x: 0px;       /* 水平方向の調整 */
-  --board-offset-y: -110px;       /* 垂直方向の調整 */
+  --scale-factor: 0.995;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
+  --board-offset-x: 0px;           /* 水平方向の調整 */
+  --board-offset-y: -110.5px;       /* 垂直方向の調整 */
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
@@ -31,9 +31,9 @@ html, body {
   --captured-area-height: calc(50px * var(--scale-factor));
   --header-bottom-margin: calc(10px * var(--scale-factor));
   
-  /* 持ち駒の位置調整用変数（完全に数値指定） */
-  --top-hand-top: calc(-110px * var(--scale-factor));
-  --top-hand-right: calc(-24px * var(--scale-factor));
+  /* 持ち駒の位置調整用変数 */
+  --top-hand-top: calc(-98px * var(--scale-factor));
+  --top-hand-right: calc(-190px * var(--scale-factor));
   --top-hand-width: calc(1000px * var(--scale-factor));
   --top-hand-height: calc(100px * var(--scale-factor));
   
@@ -41,6 +41,15 @@ html, body {
   --bottom-hand-left: calc(4px * var(--scale-factor));
   --bottom-hand-width: calc(100vw * var(--scale-factor));
   --bottom-hand-height: calc(50px * var(--scale-factor));
+  
+  /* タイマー配置・背景調整用変数 */
+  --sente-timer-offset-y: calc(-1.2 * var(--cell-size));  /* 先手タイマー縦位置 */
+  --gote-timer-offset-y: calc(-1.2 * var(--cell-size));   /* 後手タイマー縦位置 */
+  --sente-timer-offset-x: 0; /* 先手タイマー水平調整 */
+  --gote-timer-offset-x: 0;  /* 後手タイマー水平調整 */
+  
+  --timer-padding-vertical: 4px;    /* タイマー背景上下の余白 */
+  --timer-padding-horizontal: 8px;  /* タイマー背景左右の余白 */
 }
 
 /* ----------------------------- */
@@ -67,7 +76,9 @@ html, body {
   height: var(--board-height);
 }
 
-/* 後手の持ち駒エリア */
+/* ----------------------------- */
+/* 持ち駒エリア */
+/* ----------------------------- */
 #top-hand-container {
   position: absolute;
   top: var(--top-hand-top);
@@ -88,7 +99,6 @@ html, body {
   overflow-x: auto;
 }
 
-/* 先手の持ち駒エリア */
 #bottom-hand-container {
   position: absolute;
   top: var(--bottom-hand-top);
@@ -130,13 +140,7 @@ html, body {
   height: var(--piece-height);
   position: relative;
   overflow: visible;
-  clip-path: polygon(
-    50% 0%,
-    85% 15%,
-    96% 98%,
-    4% 98%,
-    15% 15%
-  );
+  clip-path: polygon(50% 0%, 85% 15%, 96% 98%, 4% 98%, 15% 15%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,35 +149,87 @@ html, body {
   font-size: var(--piece-font-size);
 }
 
+/* ----------------------------- */
+/* 持ち駒・成り駒などの追加スタイル */
+/* ----------------------------- */
+.promoted {
+  color: red;
+}
+
+.selected-hand {
+  outline: 2px solid blue;
+}
+
+/* 成香、成桂、成銀専用：縦書きと文字サイズ */
+.small-promoted {
+  font-size: 1.8em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+/* ----------------------------- */
+/* タイマー用スタイル */
+/* ----------------------------- */
+.timer {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-weight: bold;
+  font-size: calc(24px * var(--scale-factor));
+  color: black;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: var(--timer-padding-vertical) var(--timer-padding-horizontal);
+  border-radius: 4px;
+  z-index: 3000;
+}
+
+/* タイマー（残り3分以下なら赤く） */
+.timer.red {
+  color: red;
+}
+
+/* タイマーの配置：先手・後手ラベルの直下、位置調整可能 */
+#sente-timer {
+  bottom: calc(var(--sente-timer-offset-y));
+  right: var(--sente-timer-offset-x);
+}
+#gote-timer {
+  top: calc(var(--gote-timer-offset-y));
+  left: var(--gote-timer-offset-x);
+  transform: rotate(180deg); /* 後手タイマーは逆さま */
+}
+
+/* ----------------------------- */
+/* 初期配置ラベル */
+/* ----------------------------- */
+.side-label {
+  position: absolute;
+  font-family: 'Shippori Mincho', serif;
+  font-weight: bold;
+  font-size: calc(42px * var(--scale-factor));
+  z-index: 3000;
+}
+
+.gote-label {
+  top: calc(-0.7 * var(--cell-size));
+  left: 0;
+  transform: rotate(180deg);
+}
+
+.sente-label {
+  bottom: calc(-0.7 * var(--cell-size));
+  right: 0;
+}
+
 .piece .piece-count {
   position: absolute;
-  bottom: calc(-6px * var(--scale-factor));
+  bottom: calc(-5px * var(--scale-factor));
   right: 0;
   color: black;
-  font-size: calc(30px * var(--scale-factor));
+  font-size: calc(25px * var(--scale-factor));
   padding: 0 calc(7px * var(--scale-factor));
   border-radius: calc(5px * var(--scale-factor));
 }
 
 .rotated {
   transform: rotate(180deg);
-}
-
-/* 既存の内容はそのままで、最後に以下のルールを追加 */
-
-.promoted {
-  color: red;
-}
-
-/* --- 追加: 持ち駒選択時のスタイル --- */
-.selected-hand {
-  outline: 2px solid blue;
-}
-
-/* --- 成香、成桂、成銀専用の文字サイズ設定 --- */
-/* ここで文字サイズを変更できます。必要に応じて font-size の値を調整してください。 */
-.small-promoted {
-  font-size: 1.8em;
-  writing-mode: vertical-rl;
-  text-orientation: upright;
 }
