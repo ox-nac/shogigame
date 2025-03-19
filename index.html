@@ -9,44 +9,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ヘッダー：盤面の外、上部（左上）に配置 -->
-  <div id="header">
-    <div id="title-container">
-      <h1>将棋道場</h1>
-      <div id="sponsor-info">
-        <div class="sponsor-text">管理人：涼一</div>
-        <!-- X Icon と @ox_nac を縦に並べる -->
-        <div class="host-container">
-          <a href="https://x.com/ox_nac" target="_blank" class="host-link">
-            <img src="images/xicon.jpg" class="host-icon" alt="X Icon">
-            <span class="host-twitter">@ox_nac</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  
   <!-- 盤面コンテナ -->
   <div id="board-container">
     <div id="shogi-board">
-      <!-- 盤面セルは script.js で生成 -->
+      <!-- 盤面セルは script.js により生成 -->
     </div>
-    <!-- 後手の持ち駒エリア：盤面内に絶対配置。盤面右上の空白部分に配置 -->
+    <!-- 後手の持ち駒エリア -->
     <div id="top-hand-container">
-      <div id="top-hand">
-        <!-- 後手持ち駒が右→左に一列に並ぶ -->
-      </div>
+      <div id="top-hand"></div>
+    </div>
+    <!-- 先手の持ち駒エリア -->
+    <div id="bottom-hand-container">
+      <div id="bottom-hand"></div>
     </div>
   </div>
-
-  <!-- 先手の持ち駒エリア：盤面の下延長線上に横長に配置 -->
-  <div id="bottom-hand-container">
-    <div id="bottom-hand">
-      <!-- 先手持ち駒が左→右に一列に並ぶ -->
-    </div>
-  </div>
-
+  
   <!-- JavaScriptファイルの読み込み -->
   <script src="script.js"></script>
+  
+  <!-- ユーザーエージェント判定：スマホ・タブレットのみ表示 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const isMobileOrTablet =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (!isMobileOrTablet) {
+        document.body.innerHTML = "<div style='text-align: center; margin-top: 50px; font-size: 24px;'>申し訳ありません。このページはスマホとタブレットでのみ表示可能です。</div>";
+      }
+    });
+  </script>
 </body>
 </html>

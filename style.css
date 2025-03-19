@@ -1,137 +1,101 @@
-body {
+/* ----------------------------- */
+/* Base Settings (Smartphone/Tablet) */
+/* ----------------------------- */
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* 不要なスクロールを防止 */
   background-color: #FFFFDD;
-  margin: 0;       /* スマホ時の外周余白を消す */
-  padding: 0;      /* 念のため padding も 0 */
 }
 
-/* ============================= */
-/* 調整用のCSS変数（変更しやすいように設定） */
-/* ============================= */
+/* CSS変数による調整用設定 */
 :root {
-  --host-icon-height: 15px;       /* X Icon の高さ */
-  --host-twitter-font-size: 15px; /* @ox_nac のフォントサイズ */
-  --title-font-size: 32px;        /* タイトル「将棋道場」の文字サイズ */
-  --title-line-height: 1.2;       /* タイトルの行高さ倍率 */
-  --board-width: 451px;           /* 将棋盤の幅（PC版） */
-  --board-height: 451px;          /* 将棋盤の高さ（PC版） */
-  --cell-size: 50px;              /* 各セルのサイズ */
-  --piece-width: 40px;            /* 駒の幅 */
-  --piece-height: 45px;           /* 駒の高さ */
-  --captured-area-height: 50px;   /* 持ち駒台の高さ */
-  --header-bottom-margin: 10px;    /* ヘッダーと盤面の間隔 */
+  /* 拡大縮小倍率と盤面の座標オフセット */
+  --scale-factor: 0.97;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
+  --board-offset-x: 0px;       /* 水平方向の調整 */
+  --board-offset-y: -110px;       /* 垂直方向の調整 */
+  
+  --host-icon-height: calc(30px * var(--scale-factor));
+  --host-twitter-font-size: calc(30px * var(--scale-factor));
+  --title-font-size: calc(100px * var(--scale-factor));
+  --title-line-height: 1.2;
+  
+  /* 盤面のサイズは画面幅に倍率を掛けたサイズ */
+  --board-width: calc(100vw * var(--scale-factor));
+  --board-height: calc(100vw * var(--scale-factor));
+  --cell-size: calc((100vw * var(--scale-factor)) / 9);
+  --piece-width: calc(var(--cell-size) * 0.9);
+  --piece-height: calc(var(--cell-size) * 0.9);
+  --piece-font-size: calc(var(--piece-height) * 0.5);
+  --captured-area-height: calc(50px * var(--scale-factor));
+  --header-bottom-margin: calc(10px * var(--scale-factor));
+  
+  /* 持ち駒の位置調整用変数（完全に数値指定） */
+  --top-hand-top: calc(-110px * var(--scale-factor));
+  --top-hand-right: calc(-24px * var(--scale-factor));
+  --top-hand-width: calc(1000px * var(--scale-factor));
+  --top-hand-height: calc(100px * var(--scale-factor));
+  
+  --bottom-hand-top: calc(101vw * var(--scale-factor));
+  --bottom-hand-left: calc(4px * var(--scale-factor));
+  --bottom-hand-width: calc(100vw * var(--scale-factor));
+  --bottom-hand-height: calc(50px * var(--scale-factor));
 }
 
-/* ============================= */
-/* ヘッダー部分 (PC版) */
-/* ============================= */
-#header {
-  width: var(--board-width);
-  margin: 0 auto var(--header-bottom-margin) auto;
-  text-align: left;
-  font-family: 'Shippori Mincho', serif;
-}
-
-#title-container h1 {
-  font-size: var(--title-font-size);
-  line-height: var(--title-line-height);
-  margin: 0;
-  font-family: 'Shippori Mincho', serif;
-}
-
-#sponsor-info {
-  margin-top: 5px;
-  font-size: 14px;
-  font-family: 'Shippori Mincho', serif;
-}
-
-.sponsor-text {
-  margin-bottom: 4px;
-}
-
-/* host-container: ブロック表示で縦に並べる */
-.host-container {
-  display: block;
-  margin-top: 2px;
-}
-
-.host-container a {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.host-icon {
-  height: var(--host-icon-height);
-  width: auto;
-  margin: 0;
-  vertical-align: middle;
-}
-
-.host-twitter {
-  font-size: var(--host-twitter-font-size);
-  margin: 0;
-  vertical-align: middle;
-  color: blue;
-}
-
-.host-link {
-  position: relative;  /* 追加：これにより z-index が有効になる */
-  pointer-events: auto;
-  z-index: 100;
-  color: blue;
-  display: inline-flex; /* 念のため再指定 */
-  align-items: center;
-  gap: 2px;
-  text-decoration: none;
-}
-
-
-/* ============================= */
-/* Board and Captured Pieces Layout (PC版) */
-/* ============================= */
+/* ----------------------------- */
+/* Board and Captured Pieces Layout */
+/* ----------------------------- */
 #board-container {
   width: var(--board-width);
-  margin: 0 auto;
-  position: relative; /* 後手持ち駒エリアの基準 */
+  height: var(--board-height);
+  margin: calc(230px * var(--scale-factor)) auto 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 座標調整：指定したオフセット値分ずらす */
+  transform: translate(var(--board-offset-x), var(--board-offset-y));
 }
 
 #shogi-board {
   display: grid;
   grid-template-columns: repeat(9, var(--cell-size));
   grid-template-rows: repeat(9, var(--cell-size));
-  border: 2px solid black;
+  border: calc(2px * var(--scale-factor)) solid black;
   width: var(--board-width);
   height: var(--board-height);
 }
 
 /* 後手の持ち駒エリア */
-/* 盤面の右上に、盤面上端から60px上（例）に配置（香車の上あたりの空白） */
 #top-hand-container {
   position: absolute;
-  top: -60px; /* 盤面上端から60px上に配置。必要に応じて調整してください。 */
-  right: 0;
-  width: var(--board-width);
-  height: var(--captured-area-height);
-  z-index: 10;
+  top: var(--top-hand-top);
+  left: var(--top-hand-right);
+  width: var(--top-hand-width);
+  height: var(--top-hand-height);
+  z-index: 1000;
 }
 
 #top-hand {
   display: flex;
-  flex-direction: row-reverse; /* 右→左に並ぶ */
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: flex-start;
   width: 100%;
   height: 100%;
-  gap: 5px;
+  gap: calc(5px * var(--scale-factor));
   overflow-x: auto;
 }
 
 /* 先手の持ち駒エリア */
 #bottom-hand-container {
-  width: var(--board-width);
-  margin: 5px auto 0 auto;
+  position: absolute;
+  top: var(--bottom-hand-top);
+  left: var(--bottom-hand-left);
+  width: var(--bottom-hand-width);
+  height: var(--bottom-hand-height);
+  z-index: 200;
 }
 
 #bottom-hand {
@@ -139,23 +103,21 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  width: 100%;
-  height: var(--captured-area-height);
-  gap: 5px;
+  gap: calc(5px * var(--scale-factor));
   overflow-x: auto;
 }
 
-/* ============================= */
+/* ----------------------------- */
 /* Board Cells and Pieces */
-/* ============================= */
+/* ----------------------------- */
 .cell {
   width: var(--cell-size);
   height: var(--cell-size);
-  border: 1px solid black;
+  border: calc(1px * var(--scale-factor)) solid black;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: calc(20px * var(--scale-factor));
   font-weight: bold;
   cursor: pointer;
   background-color: #FFCC66;
@@ -163,78 +125,55 @@ body {
 
 .piece {
   background-color: #CD853F;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: calc(1px * var(--scale-factor)) solid rgba(0, 0, 0, 0.1);
   width: var(--piece-width);
   height: var(--piece-height);
   position: relative;
+  overflow: visible;
   clip-path: polygon(
-    50% 0%,      
-    85% 15%,     
-    96% 98%,     
-    4% 98%,      
-    15% 15%      
+    50% 0%,
+    85% 15%,
+    96% 98%,
+    4% 98%,
+    15% 15%
   );
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   font-family: 'Shippori Mincho', serif;
-  font-size: 16px;
+  font-size: var(--piece-font-size);
 }
 
 .piece .piece-count {
   position: absolute;
-  bottom: -2px;
+  bottom: calc(-6px * var(--scale-factor));
   right: 0;
-  background: rgba(255, 255, 255, 0.8);
-  font-size: 10px;
-  padding: 0 2px;
-  border-radius: 3px;
+  color: black;
+  font-size: calc(30px * var(--scale-factor));
+  padding: 0 calc(7px * var(--scale-factor));
+  border-radius: calc(5px * var(--scale-factor));
 }
 
-/* ============================= */
-/* Utility */
-/* ============================= */
 .rotated {
   transform: rotate(180deg);
 }
 
-/* ============================= */
-/* スマホ・タブレット用デザイン（画面幅1024px以下） */
-/* ============================= */
-/* ============================= */
-/* スマホ・タブレット用デザイン（画面幅1024px以下） */
-/* ============================= */
-@media only screen and (max-width: 1024px) {
-  /* bodyの余白を削除し、背景を適用 */
-  body {
-    background-color: #FFFFDD;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; /* スクロール発生を防ぐ */
-  }
+/* 既存の内容はそのままで、最後に以下のルールを追加 */
 
-  /* 画面いっぱいにするための盤面コンテナ */
-  #board-container {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.promoted {
+  color: red;
+}
 
-  /* 画面いっぱいに将棋盤を拡大 */
-  #shogi-board {
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vh; /* 縦長端末で横を超えないように */
-    max-height: 100vw; /* 横長端末で縦を超えないように */
-    aspect-ratio: 1 / 1; /* 正方形を維持 */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 2px solid black;
-  }
+/* --- 追加: 持ち駒選択時のスタイル --- */
+.selected-hand {
+  outline: 2px solid blue;
+}
+
+/* --- 成香、成桂、成銀専用の文字サイズ設定 --- */
+/* ここで文字サイズを変更できます。必要に応じて font-size の値を調整してください。 */
+.small-promoted {
+  font-size: 1.8em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
 }
