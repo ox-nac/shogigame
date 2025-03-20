@@ -14,7 +14,7 @@ html, body {
   /* 拡大縮小倍率と盤面の座標オフセット */
   --scale-factor: 0.995;
   --board-offset-x: 0px;
-  --board-offset-y: -143.5px;
+  --board-offset-y: -120.5px;
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
