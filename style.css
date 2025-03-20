@@ -14,7 +14,7 @@ html, body {
   /* 拡大縮小倍率と盤面の座標オフセット */
   --scale-factor: 0.995;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
   --board-offset-x: 0px;           /* 水平方向の調整 */
-  --board-offset-y: -110.5px;       /* 垂直方向の調整 */
+  --board-offset-y: -143.5px;       /* 垂直方向の調整 */
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
@@ -43,12 +43,12 @@ html, body {
   --bottom-hand-height: calc(50px * var(--scale-factor));
   
   /* タイマー配置・背景調整用変数 */
-  --sente-timer-offset-y: calc(-1.2 * var(--cell-size));  /* 先手タイマー縦位置 */
-  --gote-timer-offset-y: calc(-1.2 * var(--cell-size));   /* 後手タイマー縦位置 */
+  --sente-timer-offset-y: calc(-0.9 * var(--cell-size));  /* 先手タイマー縦位置 */
+  --gote-timer-offset-y: calc(-0.9 * var(--cell-size));   /* 後手タイマー縦位置 */
   --sente-timer-offset-x: 0; /* 先手タイマー水平調整 */
   --gote-timer-offset-x: 0;  /* 後手タイマー水平調整 */
   
-  --timer-padding-vertical: 4px;    /* タイマー背景上下の余白 */
+  --timer-padding-vertical: 2px;    /* タイマー背景上下の余白 */
   --timer-padding-horizontal: 8px;  /* タイマー背景左右の余白 */
 }
 
@@ -174,11 +174,11 @@ html, body {
   position: absolute;
   font-family: 'Shippori Mincho', serif;
   font-weight: bold;
-  font-size: calc(24px * var(--scale-factor));
+  font-size: calc(20px * var(--scale-factor));
   color: black;
   background-color: rgba(255, 255, 255, 0.8);
   padding: var(--timer-padding-vertical) var(--timer-padding-horizontal);
-  border-radius: 4px;
+  border-radius: 2px;
   z-index: 3000;
 }
 
@@ -205,18 +205,18 @@ html, body {
   position: absolute;
   font-family: 'Shippori Mincho', serif;
   font-weight: bold;
-  font-size: calc(42px * var(--scale-factor));
+  font-size: calc(30px * var(--scale-factor));
   z-index: 3000;
 }
 
 .gote-label {
-  top: calc(-0.7 * var(--cell-size));
+  top: calc(-0.5 * var(--cell-size));
   left: 0;
   transform: rotate(180deg);
 }
 
 .sente-label {
-  bottom: calc(-0.7 * var(--cell-size));
+  bottom: calc(-0.5 * var(--cell-size));
   right: 0;
 }
 
