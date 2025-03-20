@@ -1,5 +1,5 @@
 // ===== グローバル変数 =====
-let currentTurn = "sente"; // 先手（sente: rotated=false）が初手
+let currentTurn = "sente"; // 初期は先手（sente: rotated=false）
 let selectedPiece = null;
 let selectedPosition = null;
 let selectedHandPiece = null; // 持ち駒ドロップ用に選択中の駒（文字）
@@ -10,7 +10,11 @@ let gameOver = false; // ゲーム終了フラグ
 // タイマー（各10分＝600秒）
 let senteTime = 600;
 let goteTime = 600;
-let timerInterval = setInterval(timerTick, 1000);
+let timerInterval = null; // 振り駒後に開始する
+let gameStarted = false;  // 振り駒完了後にtrue
+
+// 振りごま結果で「と」が3つ以上の場合、UI全体を上下反転するためのフラグ
+let flipped = false;
 
 // --- カスタムアラート関数 ---
 function customAlert(message, isGote) {
@@ -554,6 +558,62 @@ function renderHands() {
   }
 }
 
-renderBoard();
-renderHands();
-renderTimers();
+// ===== 振り駒処理 =====
+
+// 振り駒用の駒を5つ横並びで表示
+function renderFurikoma() {
+  const furikomaPiecesContainer = document.getElementById("furikoma-pieces");
+  furikomaPiecesContainer.innerHTML = "";
+  for (let i = 0; i < 5; i++) {
+    const pieceElem = document.createElement("div");
+    pieceElem.classList.add("piece");
+    pieceElem.textContent = "歩";
+    furikomaPiecesContainer.appendChild(pieceElem);
+  }
+}
+
+// 「振る」ボタン押下時の処理：各駒をランダムに「歩」または「と」に変化
+function tossFurikoma() {
+  const furikomaPiecesContainer = document.getElementById("furikoma-pieces");
+  const pieceElems = furikomaPiecesContainer.querySelectorAll(".piece");
+  let countFu = 0;
+  let countTo = 0;
+  pieceElems.forEach(pieceElem => {
+    if (Math.random() < 0.5) {
+      pieceElem.textContent = "歩";
+      pieceElem.classList.remove("promoted");
+      countFu++;
+    } else {
+      pieceElem.textContent = "と";
+      pieceElem.classList.add("promoted");
+      countTo++;
+    }
+  });
+  // 全て「と」が3つ以上の場合は、データはそのままでUI全体を反転
+  if (countTo >= 3) {
+    flipped = true;
+  }
+  // 数秒後に振り駒画面を閉じてゲームスタート
+  setTimeout(startGame, 2000);
+}
+
+// 振り駒完了後、振り駒UIを非表示にして盤面・持ち駒、タイマーを表示し、タイマーを開始
+function startGame() {
+  document.getElementById("furikoma-container").style.display = "none";
+  document.getElementById("board-container").style.display = "block";
+  // 反転フラグがtrueの場合、#game-wrapperに"flipped"クラスを追加（座標調整はCSS変数で可能）
+  if (flipped) {
+    document.getElementById("game-wrapper").classList.add("flipped");
+  }
+  gameStarted = true;
+  renderBoard();
+  renderHands();
+  renderTimers();
+  timerInterval = setInterval(timerTick, 1000);
+}
+
+// 振り駒用ボタンにイベントを設定
+document.getElementById("toss-button").addEventListener("click", tossFurikoma);
+
+// 初回表示時に振り駒UIをレンダリング
+renderFurikoma();

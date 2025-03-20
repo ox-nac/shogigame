@@ -9,24 +9,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- 盤面コンテナ -->
-  <div id="board-container">
-    <div id="shogi-board">
-      <!-- 盤面セルは script.js により生成 -->
+  <!-- ゲーム全体をラップするコンテナ -->
+  <div id="game-wrapper">
+    <!-- 振り駒コンテナ -->
+    <div id="furikoma-container">
+      <div id="furikoma-pieces">
+        <!-- ここに振り駒用の「歩」駒が5つ表示される -->
+      </div>
+      <button id="toss-button">振る</button>
     </div>
-    <!-- 持ち駒エリア -->
-    <div id="top-hand-container">
-      <div id="top-hand"></div>
+
+    <!-- 盤面コンテナ（振り駒完了後に表示） -->
+    <div id="board-container" style="display: none;">
+      <div id="shogi-board">
+        <!-- 盤面セルは script.js により生成 -->
+      </div>
+      <!-- 持ち駒エリア -->
+      <div id="top-hand-container">
+        <div id="top-hand"></div>
+      </div>
+      <div id="bottom-hand-container">
+        <div id="bottom-hand"></div>
+      </div>
+      <!-- 初期配置ラベル -->
+      <div id="gote-label" class="side-label gote-label">後手</div>
+      <div id="sente-label" class="side-label sente-label">先手</div>
+      <!-- タイマー表示用 -->
+      <div id="gote-timer" class="timer"></div>
+      <div id="sente-timer" class="timer"></div>
     </div>
-    <div id="bottom-hand-container">
-      <div id="bottom-hand"></div>
-    </div>
-    <!-- 初期配置ラベル -->
-    <div id="gote-label" class="side-label gote-label">後手</div>
-    <div id="sente-label" class="side-label sente-label">先手</div>
-    <!-- タイマー表示用 -->
-    <div id="gote-timer" class="timer"></div>
-    <div id="sente-timer" class="timer"></div>
   </div>
   
   <!-- JavaScriptファイルの読み込み -->

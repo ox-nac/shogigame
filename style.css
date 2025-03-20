@@ -13,8 +13,8 @@ html, body {
 :root {
   /* 拡大縮小倍率と盤面の座標オフセット */
   --scale-factor: 0.995;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
-  --board-offset-x: 0px;           /* 水平方向の調整 */
-  --board-offset-y: -143.5px;       /* 垂直方向の調整 */
+  --board-offset-x: -1.5px;           /* 水平方向の調整 */
+  --board-offset-y: -121.5px;       /* 垂直方向の調整 */
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
@@ -50,6 +50,17 @@ html, body {
   
   --timer-padding-vertical: 2px;    /* タイマー背景上下の余白 */
   --timer-padding-horizontal: 8px;  /* タイマー背景左右の余白 */
+  
+  /* 反転後の座標調整用変数 */
+  --flip-offset-x: 0px;
+  --flip-offset-y: 243px;
+}
+
+/* ----------------------------- */
+/* 全体のゲームUIラッパー（振りごま結果で上下反転） */
+/* ----------------------------- */
+#game-wrapper.flipped {
+  transform: rotate(180deg) translate(var(--flip-offset-x), var(--flip-offset-y));
 }
 
 /* ----------------------------- */
@@ -232,4 +243,35 @@ html, body {
 
 .rotated {
   transform: rotate(180deg);
+}
+
+/* ----------------------------- */
+/* 振り駒用スタイル */
+/* ----------------------------- */
+#furikoma-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  background-color: #FFFFDD;
+  padding: calc(20px * var(--scale-factor));
+  border: calc(2px * var(--scale-factor)) solid black;
+  border-radius: calc(10px * var(--scale-factor));
+}
+
+#furikoma-pieces {
+  display: flex;
+  gap: calc(10px * var(--scale-factor));
+  margin-bottom: calc(20px * var(--scale-factor));
+}
+
+#toss-button {
+  font-size: calc(20px * var(--scale-factor));
+  padding: calc(10px * var(--scale-factor)) calc(20px * var(--scale-factor));
+  cursor: pointer;
 }
