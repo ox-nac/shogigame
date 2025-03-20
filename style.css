@@ -13,8 +13,8 @@ html, body {
 :root {
   /* 拡大縮小倍率と盤面の座標オフセット */
   --scale-factor: 0.995;
-  --board-offset-x: -1.5px;
-  --board-offset-y: -81px;
+  --board-offset-x: 0px;
+  --board-offset-y: -143.5px;
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
@@ -53,7 +53,7 @@ html, body {
   
   /* 反転後の座標調整用変数 */
   --flip-offset-x: 0px;
-  --flip-offset-y: 160px;
+  --flip-offset-y: 0px;
 }
 
 /* ----------------------------- */

@@ -67,6 +67,12 @@ function playWarningSound() {
   }, 300);
 }
 
+// --- 移動時のサウンドを鳴らす関数 ---
+function playMoveSound() {
+  const moveSound = new Audio('images/shogikoma.mp3');
+  moveSound.play();
+}
+
 // --- タイマー更新処理 ---
 function timerTick() {
   if (gameOver) return;
@@ -401,6 +407,10 @@ function movePiece(x, y) {
     delete selectedPiece.fromDrop;
   }
   board[y][x] = selectedPiece;
+  
+  // ***** ここで駒移動の音を鳴らす *****
+  playMoveSound();
+  
   selectedPiece = null;
   selectedPosition = null;
   currentTurn = (currentTurn === "sente") ? "gote" : "sente";
@@ -597,7 +607,7 @@ function tossFurikoma() {
   setTimeout(startGame, 2000);
 }
 
-// 振り駒完了後、振り駒UIを非表示にして盤面・持ち駒、タイマーを表示し、タイマーを開始
+// 振り駒完了後、振り駒UIとヘッダーを非表示にして盤面・持ち駒、タイマーを表示し、タイマーを開始
 function startGame() {
   document.getElementById("header").style.display = "none";
   document.getElementById("furikoma-container").style.display = "none";
