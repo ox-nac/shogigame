@@ -11,9 +11,8 @@ html, body {
 
 /* CSS変数による調整用設定 */
 :root {
-  /* 拡大縮小倍率と盤面の座標オフセット */
   --scale-factor: 0.995;
-  --board-offset-x: 0px;
+  --board-offset-x: -1.5px;
   --board-offset-y: -120.5px;
   
   --host-icon-height: calc(30px * var(--scale-factor));
@@ -21,7 +20,6 @@ html, body {
   --title-font-size: calc(100px * var(--scale-factor));
   --title-line-height: 1.2;
   
-  /* 盤面のサイズは画面幅に倍率を掛けたサイズ */
   --board-width: calc(100vw * var(--scale-factor));
   --board-height: calc(100vw * var(--scale-factor));
   --cell-size: calc((100vw * var(--scale-factor)) / 9);
@@ -30,6 +28,14 @@ html, body {
   --piece-font-size: calc(var(--piece-height) * 0.5);
   --captured-area-height: calc(50px * var(--scale-factor));
   --header-bottom-margin: calc(10px * var(--scale-factor));
+  
+  /* 振りごまスペースの座標調整用変数 */
+  --furikoma-top: 50%;
+  --furikoma-left: 50%;
+  
+  /* 管理者情報の座標調整用変数（必要に応じて調整してください） */
+  --info-top: 40%;
+  --info-left: 50%;
   
   /* 持ち駒の位置調整用変数 */
   --top-hand-top: calc(-98px * var(--scale-factor));
@@ -52,8 +58,8 @@ html, body {
   --timer-padding-horizontal: 8px;
   
   /* 反転後の座標調整用変数 */
-  --flip-offset-x: 0px;
-  --flip-offset-y: 0px;
+  --flip-offset-x: -2px;
+  --flip-offset-y: 220px;
 }
 
 /* ----------------------------- */
@@ -99,6 +105,61 @@ html, body {
 }
 
 /* ----------------------------- */
+/* 管理者情報（info-container） */
+/* ----------------------------- */
+/* ※index.html内にinfo-containerを追加した場合のみ有効 */
+#info-container {
+  position: absolute;
+  top: var(--info-top);
+  left: var(--info-left);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 6000;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: calc(10px * var(--scale-factor));
+  border-radius: calc(5px * var(--scale-factor));
+}
+#info-text {
+  font-size: calc(18px * var(--scale-factor));
+  margin-bottom: calc(5px * var(--scale-factor));
+}
+#info-link a {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ----------------------------- */
+/* 振りごまスペース */
+/* ----------------------------- */
+#furikoma-container {
+  position: absolute;
+  top: var(--furikoma-top);
+  left: var(--furikoma-left);
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000;
+  background-color: #FFFFDD;
+  padding: calc(20px * var(--scale-factor));
+  border: calc(2px * var(--scale-factor)) solid black;
+  border-radius: calc(10px * var(--scale-factor));
+}
+#furikoma-pieces {
+  display: flex;
+  gap: calc(10px * var(--scale-factor));
+  margin-bottom: calc(20px * var(--scale-factor));
+}
+#toss-button {
+  font-size: calc(20px * var(--scale-factor));
+  padding: calc(10px * var(--scale-factor)) calc(20px * var(--scale-factor));
+  cursor: pointer;
+}
+
+/* ----------------------------- */
 /* Board and Captured Pieces Layout */
 /* ----------------------------- */
 #board-container {
@@ -111,7 +172,6 @@ html, body {
   justify-content: center;
   transform: translate(var(--board-offset-x), var(--board-offset-y));
 }
-
 #shogi-board {
   display: grid;
   grid-template-columns: repeat(9, var(--cell-size));
@@ -132,7 +192,6 @@ html, body {
   height: var(--top-hand-height);
   z-index: 1000;
 }
-
 #top-hand {
   display: flex;
   flex-direction: row-reverse;
@@ -143,7 +202,6 @@ html, body {
   gap: calc(5px * var(--scale-factor));
   overflow-x: auto;
 }
-
 #bottom-hand-container {
   position: absolute;
   top: var(--bottom-hand-top);
@@ -152,7 +210,6 @@ html, body {
   height: var(--bottom-hand-height);
   z-index: 200;
 }
-
 #bottom-hand {
   display: flex;
   flex-direction: row;
@@ -177,7 +234,6 @@ html, body {
   cursor: pointer;
   background-color: #FFCC66;
 }
-
 .piece {
   background-color: #CD853F;
   border: calc(1px * var(--scale-factor)) solid rgba(0, 0, 0, 0.1);
@@ -200,11 +256,9 @@ html, body {
 .promoted {
   color: red;
 }
-
 .selected-hand {
   outline: 2px solid blue;
 }
-
 .small-promoted {
   font-size: 1.8em;
   writing-mode: vertical-rl;
@@ -225,11 +279,9 @@ html, body {
   border-radius: 2px;
   z-index: 3000;
 }
-
 .timer.red {
   color: red;
 }
-
 #sente-timer {
   bottom: calc(var(--sente-timer-offset-y));
   right: var(--sente-timer-offset-x);
@@ -250,18 +302,15 @@ html, body {
   font-size: calc(30px * var(--scale-factor));
   z-index: 3000;
 }
-
 .gote-label {
   top: calc(-0.5 * var(--cell-size));
   left: 0;
   transform: rotate(180deg);
 }
-
 .sente-label {
   bottom: calc(-0.5 * var(--cell-size));
   right: 0;
 }
-
 .piece .piece-count {
   position: absolute;
   bottom: calc(-5px * var(--scale-factor));
@@ -271,38 +320,6 @@ html, body {
   padding: 0 calc(7px * var(--scale-factor));
   border-radius: calc(5px * var(--scale-factor));
 }
-
 .rotated {
   transform: rotate(180deg);
-}
-
-/* ----------------------------- */
-/* 振り駒用スタイル */
-/* ----------------------------- */
-#furikoma-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 5000;
-  background-color: #FFFFDD;
-  padding: calc(20px * var(--scale-factor));
-  border: calc(2px * var(--scale-factor)) solid black;
-  border-radius: calc(10px * var(--scale-factor));
-}
-
-#furikoma-pieces {
-  display: flex;
-  gap: calc(10px * var(--scale-factor));
-  margin-bottom: calc(20px * var(--scale-factor));
-}
-
-#toss-button {
-  font-size: calc(20px * var(--scale-factor));
-  padding: calc(10px * var(--scale-factor)) calc(20px * var(--scale-factor));
-  cursor: pointer;
 }
