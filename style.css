@@ -12,9 +12,9 @@ html, body {
 /* CSS変数による調整用設定 */
 :root {
   /* 拡大縮小倍率と盤面の座標オフセット */
-  --scale-factor: 0.995;           /* ここで n 倍に調整可能（例：2 にすると 2 倍） */
-  --board-offset-x: -1.5px;           /* 水平方向の調整 */
-  --board-offset-y: -121.5px;       /* 垂直方向の調整 */
+  --scale-factor: 0.995;
+  --board-offset-x: -1.5px;
+  --board-offset-y: -81px;
   
   --host-icon-height: calc(30px * var(--scale-factor));
   --host-twitter-font-size: calc(30px * var(--scale-factor));
@@ -43,17 +43,17 @@ html, body {
   --bottom-hand-height: calc(50px * var(--scale-factor));
   
   /* タイマー配置・背景調整用変数 */
-  --sente-timer-offset-y: calc(-0.9 * var(--cell-size));  /* 先手タイマー縦位置 */
-  --gote-timer-offset-y: calc(-0.9 * var(--cell-size));   /* 後手タイマー縦位置 */
-  --sente-timer-offset-x: 0; /* 先手タイマー水平調整 */
-  --gote-timer-offset-x: 0;  /* 後手タイマー水平調整 */
+  --sente-timer-offset-y: calc(-0.9 * var(--cell-size));
+  --gote-timer-offset-y: calc(-0.9 * var(--cell-size));
+  --sente-timer-offset-x: 0;
+  --gote-timer-offset-x: 0;
   
-  --timer-padding-vertical: 2px;    /* タイマー背景上下の余白 */
-  --timer-padding-horizontal: 8px;  /* タイマー背景左右の余白 */
+  --timer-padding-vertical: 2px;
+  --timer-padding-horizontal: 8px;
   
   /* 反転後の座標調整用変数 */
   --flip-offset-x: 0px;
-  --flip-offset-y: 243px;
+  --flip-offset-y: 160px;
 }
 
 /* ----------------------------- */
@@ -61,6 +61,41 @@ html, body {
 /* ----------------------------- */
 #game-wrapper.flipped {
   transform: rotate(180deg) translate(var(--flip-offset-x), var(--flip-offset-y));
+}
+
+/* ----------------------------- */
+/* ヘッダー */
+/* ----------------------------- */
+#header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: calc(20px * var(--scale-factor));
+}
+#title-container h1 {
+  font-size: calc(40px * var(--scale-factor));
+  margin: 0;
+}
+#sponsor-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: calc(5px * var(--scale-factor));
+}
+.sponsor-text {
+  margin-right: calc(10px * var(--scale-factor));
+  font-size: calc(16px * var(--scale-factor));
+}
+.host-container {
+  display: flex;
+  align-items: center;
+}
+.host-icon {
+  width: calc(30px * var(--scale-factor));
+  height: auto;
+  margin-right: calc(5px * var(--scale-factor));
+}
+.host-twitter {
+  font-size: calc(16px * var(--scale-factor));
 }
 
 /* ----------------------------- */
@@ -74,7 +109,6 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 座標調整：指定したオフセット値分ずらす */
   transform: translate(var(--board-offset-x), var(--board-offset-y));
 }
 
@@ -171,7 +205,6 @@ html, body {
   outline: 2px solid blue;
 }
 
-/* 成香、成桂、成銀専用：縦書きと文字サイズ */
 .small-promoted {
   font-size: 1.8em;
   writing-mode: vertical-rl;
@@ -193,12 +226,10 @@ html, body {
   z-index: 3000;
 }
 
-/* タイマー（残り3分以下なら赤く） */
 .timer.red {
   color: red;
 }
 
-/* タイマーの配置：先手・後手ラベルの直下、位置調整可能 */
 #sente-timer {
   bottom: calc(var(--sente-timer-offset-y));
   right: var(--sente-timer-offset-x);
@@ -206,7 +237,7 @@ html, body {
 #gote-timer {
   top: calc(var(--gote-timer-offset-y));
   left: var(--gote-timer-offset-x);
-  transform: rotate(180deg); /* 後手タイマーは逆さま */
+  transform: rotate(180deg);
 }
 
 /* ----------------------------- */

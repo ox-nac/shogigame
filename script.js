@@ -599,6 +599,7 @@ function tossFurikoma() {
 
 // 振り駒完了後、振り駒UIを非表示にして盤面・持ち駒、タイマーを表示し、タイマーを開始
 function startGame() {
+  document.getElementById("header").style.display = "none";
   document.getElementById("furikoma-container").style.display = "none";
   document.getElementById("board-container").style.display = "block";
   // 反転フラグがtrueの場合、#game-wrapperに"flipped"クラスを追加（座標調整はCSS変数で可能）
